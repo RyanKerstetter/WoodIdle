@@ -1,0 +1,19 @@
+{
+  "name": "chop",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+  
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "level": 1,
+        "required_chops": 1,
+        "effects": [
+            {
+                "type": "chopping_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 2,
+        "required_chops": 10,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    }
+]

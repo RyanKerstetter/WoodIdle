@@ -1,0 +1,124 @@
+[
+    {
+        "level": 1,
+        "required_chops": 1e1,
+        "description": "1.5x chopping speed",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 2,
+        "required_chops": 1e2,
+        "description": "1.5x chop yield",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 1.5
+            }
+        ]
+    },{
+        "level": 3,
+        "required_chops": 1e3,
+        "description": "1.5x sell price",
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 4,
+        "required_chops": 1e4,
+        "description": "1.5x chop speed",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 5,
+        "required_chops": 1e5,
+        "description": "Unlock Gloves in the Blacksmith",
+        "effects": [],
+        "custom": {
+            "id": "gloves_unlocked",
+            "value": 1
+        }
+    },
+    {
+        "level": 6,
+        "required_chops": 1e6,
+        "description": "1.5x chop yield",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 7,
+        "required_chops": 1e7,
+        "description": "1.5x chop speed",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 8,
+        "required_chops": 1e8,
+        "description": "1.5x chop yield",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 9,
+        "required_chops": 1e9,
+        "description": "1.5x sell price",
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 10,
+        "required_chops": 1e10,
+        "description" : "Unlock the Meadows biome!",
+        "effects": [],
+        "custom": {
+            "id": "meadow_unlocked",
+            "value": 1
+        }
+    },
+    {
+        "level": 11,
+        "required_chops": 1e11,
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 50,
+        "required_chops": 1e50,
+        "effects": []
+    }
+]

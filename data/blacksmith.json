@@ -1,0 +1,167 @@
+[
+    {
+        "name": "Basic Rock",
+        "upgrade_id" : "basic_rock",
+        "description": "1.5x chopping yield",
+        "cost": 1e2,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "rock.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "name": "Hard Rock",
+        "upgrade_id" : "hard_rock",
+        "description": "3x chopping yield",
+        "cost": 1e4,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "hard-rock.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 3
+            }
+        ]
+    },
+    {
+        "name": "Sharp Rock",
+        "upgrade_id" : "sharp_rock",
+        "description": "6x chopping yield",
+        "cost": 2e6,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "sharp-rock.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 6
+            }
+        ]
+    },
+    {
+        "name": "Stone Hatchet",
+        "upgrade_id" : "stone_hatchet",
+        "description": "10x chopping yield",
+        "cost": 8e8,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "stone-hatchet.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 10
+            }
+        ]
+    },
+    {
+        "name": "Stone Axe",
+        "upgrade_id" : "stone_axe",
+        "description": "20x chopping yield",
+        "cost": 2e11,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "stone-axe.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 20
+            }
+        ]
+    },
+    {
+        "name": "Iron Hatchet",
+        "upgrade_id" : "iron_hatchet",
+        "description": "40x chopping yield",
+        "cost": 4e13,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "iron-hatchet.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 40
+            }
+        ]
+    },
+    {
+        "name": "Iron Axe",
+        "upgrade_id" : "iron_axe",
+        "description": "100x chopping yield",
+        "cost": 2e16,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "iron-axe.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 100
+            }
+        ]
+    },
+    {
+        "name": "Fingerless Gloves",
+        "upgrade_id" : "fingerless_gloves",
+        "description": "2x chop speed",
+        "cost": 1e7,
+        "cost_type": "gold",
+        "equip_location": "gloves",
+        "icon_path" : "fingerless-gloves.svg",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "name": "Leather Gloves",
+        "upgrade_id" : "leather_gloves",
+        "description": "5x chop speed",
+        "cost": 2e9,
+        "cost_type": "gold",
+        "equip_location": "gloves",
+        "icon_path" : "leather-gloves.svg",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 5
+            }
+        ]
+    },
+    {
+        "name": "Boxing Gloves",
+        "upgrade_id" : "boxing_gloves",
+        "description": "10x chop speed",
+        "cost": 1e12,
+        "cost_type": "gold",
+        "equip_location": "gloves",
+        "icon_path" : "boxing-glove.svg",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 10
+            }
+        ]
+    },
+    {
+        "name": "Brass Knucles",
+        "upgrade_id" : "brass_knuckles",
+        "description": "25x chop speed",
+        "cost": 2e16,
+        "cost_type": "gold",
+        "equip_location": "gloves",
+        "icon_path" : "brass-knuckles.svg",
+        "effects": [
+            {
+                "type": "chop_speed",
+                "value": 25
+            }
+        ]
+    }
+]

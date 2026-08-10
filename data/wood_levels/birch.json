@@ -1,0 +1,82 @@
+[
+    {
+        "level": 1,
+        "required_chops": 1e7,
+        "effects": [
+            {
+                "type": "chopping_speed",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 2,
+        "required_chops": 1e8,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 3,
+        "required_chops": 1e9,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 4,
+        "required_chops": 1e10,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 5,
+        "required_chops": 1e11,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 6,
+        "required_chops": 1e12,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 7,
+        "required_chops": 1e13,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    },
+    {
+        "level": 8,
+        "required_chops": 1e14,
+        "effects": [
+            {
+                "type": "chop_amount",
+                "value": 2
+            }
+        ]
+    }
+]

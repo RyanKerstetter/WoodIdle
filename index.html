@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Idle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ui-root">
+    <div id="top-bar">
+        <div class="box" id="resource-box">
+            <h3>Gold: <span id="gold">0</span></h3>
+            <h3>Prestige Tokens: <span id="prestige-tokens">0</span></h3>
+        </div>
+
+        <div class="box" id="title-box">
+            <h3>Wood Idle</h1>
+        </div>
+
+        <div class="box" id="settings-box">
+            <h3>Settings</h3>
+        </div>
+
+        
+    </div>
+
+    <div id="main-area">
+        <div id="building-area" class="box">
+            <div id="blacksmith" class=""></div>
+            <div id="library" class="hidden"></div>
+        </div>
+
+        <div id="side-area" class="box">
+            <div id="levels" >
+                <div id="level-top">
+                    <div id="level-progress-container">
+                        <span id="level-progress-text">0 / 1</span>
+                        <span id="level-target-text">Level 2</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-fill" id="level-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="area-upgrades">
+            </div>
+        </div>
+
+        <div id="wood_area" class="box">
+            
+            <div id=area_selector>
+            </div>
+            <canvas id="wood_canvas"></canvas>
+
+            <div id="wood-data" class="box" style="width: 100%;"> 
+    
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+                    
+                    <span id="wood-type-box" style="font-weight: bold;">Oak</span>
+                    
+                    <span id="time-required">0.0s</span>
+                    <div class="progress-container" style="flex-grow: 1;">
+                        <div class="progress-fill" id="chop-progress-bar"></div>
+                    </div>
+                    <span id="wood-count" style="white-space: nowrap; flex-shrink: 0;">1 log</span>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <span id="chop-speed">Chop Speed: 1.0x</span>
+                    <span id="sell-price">Sell Price: $1.00</span>
+                    <span id="profit">Profit: $1.00</span>
+                </div>
+
+            </div>
+            
+            
+        </div>
+    </div>
+
+</div>
+
+<script type="module" src="dist/game.js"></script>
+</body>
+</html>
