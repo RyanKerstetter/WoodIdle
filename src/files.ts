@@ -1,5 +1,5 @@
 
-import { AreaData, LevelData, AreaUpgradeData, BlacksmithUpgradeData } from "./data.js";
+import { AreaData, LevelData, AreaUpgradeData, BlacksmithUpgradeData, WoodData } from "./data.js";
 import {AreaType, WoodType} from "./data.js"
     
 export const FileData = {
@@ -9,7 +9,9 @@ export const FileData = {
     wood_levels: {} as Record<WoodType, LevelData[]>,
 
     // Helper maps to find associated values
-    area_to_wood_map: {} as Record<AreaType, WoodType>,
+    area_to_wood: {} as Record<AreaType, WoodType>,
+    area_to_data: {} as Record<AreaType, AreaData>,
+    wood_to_data: {} as Record<WoodType,WoodData>,
 };
 
 
@@ -23,7 +25,9 @@ export async function loadFiles() {
 
     FileData.areas = areasData.map((area: any) => new AreaData(area));
     FileData.areas.forEach((area: AreaData) => {
-        FileData.area_to_wood_map[area.name as AreaType] = area.wood.name as WoodType;
+        FileData.area_to_wood[area.name as AreaType] = area.wood.name as WoodType;
+        FileData.area_to_data[area.name as AreaType] = area;
+        FileData.wood_to_data[area.wood.name as WoodType] = area.wood;
     });
     FileData.blacksmith = blacksmithData.map((upgrade: any) => new BlacksmithUpgradeData(upgrade));
     FileData.area_upgrade_data = new AreaUpgradeData(areaUpgradeData);

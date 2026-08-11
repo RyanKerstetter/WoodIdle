@@ -4,7 +4,7 @@
         "description": "A lush forest filled with trees and wildlife.",
         "wood" : {
             "name": "oak",
-            "base_chop_time": 5,
+            "base_tree_health": 10,
             "base_chop_yield": 1,
             "base_sell_price": 10
         },
@@ -15,7 +15,7 @@
         "description": "A peaceful meadow with tall grass and wildflowers.",
         "wood" : {
             "name": "birch",
-            "base_chop_time": 100,
+            "base_tree_health": 5,
             "base_chop_yield": 1,
             "base_sell_price": 10000
         },
@@ -26,7 +26,7 @@
         "description": "A cold and harsh tundra with minimal vegetation.",
         "wood" : {
             "name": "pine",
-            "base_chop_time": 1000,
+            "base_tree_health": 5,
             "base_chop_yield": 1,
             "base_sell_price": 100000
         },
@@ -37,7 +37,7 @@
         "description": "A hot and dry desert with sparse vegetation.",
         "wood" : {
             "name": "palm",
-            "base_chop_time": 50000,
+            "base_tree_health": 5,
             "base_chop_yield": 1,
             "base_sell_price": 20000000
         },
@@ -48,7 +48,7 @@
         "description": "",
         "wood" : {
             "name": "mahogany",
-            "base_chop_time": 5000000,
+            "base_tree_health": 5,
             "base_chop_yield": 1,
             "base_sell_price": 2000000000
         },

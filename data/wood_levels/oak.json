@@ -2,42 +2,40 @@
     {
         "level": 1,
         "required_chops": 1e1,
-        "description": "1.5x chopping speed",
-        "effects": [
-            {
-                "type": "chop_speed",
-                "value": 1.5
-            }
-        ]
+        "description": "Unlock Automation",
+        "effects": [],
+        "custom" : {
+            "id": "automation_unlocked",
+            "value": 1
+        }
     },
     {
         "level": 2,
         "required_chops": 1e2,
-        "description": "1.5x chop yield",
+        "description": "2x Chop Yield",
         "effects": [
             {
                 "type": "chop_yield",
-                "value": 1.5
+                "value": 2
             }
         ]
     },{
         "level": 3,
         "required_chops": 1e3,
-        "description": "1.5x sell price",
-        "effects": [
-            {
-                "type": "sell_price",
-                "value": 1.5
-            }
-        ]
+        "description": "Unlock the Axe in the Blacksmith",
+        "effects": [],
+        "custom": {
+            "id": "axe_unlocked",
+            "value": 1
+        }
     },
     {
         "level": 4,
         "required_chops": 1e4,
-        "description": "1.5x chop speed",
+        "description": "2x Sell Price",
         "effects": [
             {
-                "type": "chop_speed",
+                "type": "sell_price",
                 "value": 1.5
             }
         ]
@@ -66,10 +64,10 @@
     {
         "level": 7,
         "required_chops": 1e7,
-        "description": "1.5x chop speed",
+        "description": "1.5x chop damage",
         "effects": [
             {
-                "type": "chop_speed",
+                "type": "chop_damage",
                 "value": 1.5
             }
         ]
@@ -111,7 +109,7 @@
         "required_chops": 1e11,
         "effects": [
             {
-                "type": "chop_speed",
+                "type": "chop_damage",
                 "value": 1.5
             }
         ]

@@ -1,6 +1,5 @@
-
 import { GameData, loadGame } from "./game_data.js";
-import { FileData, loadFiles  } from "./files.js";
+import { FileData, loadFiles } from "./files.js";
 import { render } from "./renderer.js";
 import { initializeMultipliers, computeMultiplier } from "./multipliers.js";
 import { UpdateManager } from "./update_manager.js";
@@ -12,35 +11,43 @@ async function initializeGame() {
     render();
 }
 
+export function applyDamage(wood: WoodType, damage: number) {
+    const woodData = FileData.wood_to_data[wood];
+    const currentProgress = GameData.chop_progress[wood] || 0;
+    const baseHealth = woodData.base_tree_health;
+    const healthMutlplier = computeMultiplier(EffectType.TreeHealth, wood);
+    const totalHealth = baseHealth * healthMutlplier;
+    var progress = currentProgress + damage;
 
-function handleTick(deltaTime: number){
+    const completedChops = Math.floor(progress / totalHealth);
+    if (completedChops > 0) {
+        console.log("Completed Chop");
+        const baseSell = woodData.base_sell_price;
+        const sellMultiplier = computeMultiplier(EffectType.SellPrice, wood);
+        const amountChopped =
+            computeMultiplier(EffectType.ChopYield, wood) * completedChops;
+        const totalSell = baseSell * sellMultiplier * amountChopped;
+        GameData.gold += totalSell;
+        GameData.gold_this_run += totalSell;
+        GameData.chop_count[wood] =
+            (GameData.chop_count[wood] || 0) + amountChopped;
+    }
+    const nextProgress = progress - completedChops * totalHealth;
+        GameData.chop_progress[wood] = nextProgress;
+}
+
+function handleTick(deltaTime: number) {
+    const ticks = deltaTime / 1; // 1 second ticks for now maybe replace later
     FileData.areas.forEach((value: AreaData) => {
-
         const key = `${value.name.toLowerCase()}_unlocked`;
-        if(value.name != "Forest" && !GameData.upgrades[key]) return; // If the area isn't unlocked, skip it
-        
-        const type: WoodType = value.wood.name as WoodType;
-        const currentProgress = GameData.chop_progress[type] || 0;
-        const speedMultiplier = computeMultiplier(EffectType.ChoppingSpeed,type);
-        const passedTime = deltaTime * speedMultiplier;
-        const baseTime = value.wood.base_chop_time;
-        const timeMultiplier = computeMultiplier(EffectType.ChopTime,type);
-        const requiredTime = baseTime * timeMultiplier;
-        var progress = currentProgress + passedTime;
+        if (value.name != "Forest" && !GameData.upgrades[key]) return; // If the area isn't unlocked, skip it
 
-        const completedChops = Math.floor(progress / requiredTime);
-        if(completedChops > 0){
-            console.log("Completed Chop")
-            const baseSell = value.wood.base_sell_price;
-            const sellMultiplier = computeMultiplier(EffectType.SellPrice,type)
-            const amountChopped = computeMultiplier(EffectType.ChopYield,type) * completedChops;
-            const totalSell = baseSell * sellMultiplier * amountChopped;
-            GameData.gold += totalSell;
-            const key = `${value.wood.name.toLowerCase()}_chopped`;
-            GameData.upgrades[key] = (GameData.upgrades[key] || 0) + amountChopped;
-        }
-        const nextProgress = progress - completedChops * requiredTime;
-        GameData.chop_progress[type] = nextProgress;
+        const wood: WoodType = value.wood.name as WoodType;
+        const damageMultiplier = computeMultiplier(EffectType.ChopDamage, wood);
+        const workerCount = computeMultiplier(EffectType.WorkerCount,wood);
+        const totalDamage = damageMultiplier * ticks * workerCount;
+
+        applyDamage(wood,totalDamage);
     });
 }
 
@@ -51,7 +58,8 @@ async function startGame() {
 
     let lastTime = performance.now();
     let accumulator = 0;
-    const TICK_RATE = 0.10; // 100ms (Update 10 times per second)
+    const TICK_RATE = 1; 
+    UpdateManager.triggerAllUpdates();
 
     function gameLoop(currentTime: number) {
         // 1. Calculate time passed since last frame
@@ -59,13 +67,11 @@ async function startGame() {
         lastTime = currentTime;
         accumulator += deltaTime;
         while (accumulator >= TICK_RATE) {
-            const tick = accumulator > 10 ? accumulator / 100 : TICK_RATE;
+            const tick = accumulator > 1000 ? accumulator / 100 : TICK_RATE;
             handleTick(tick);
             UpdateManager.triggerUpdates("tick"); // This handles all of the UI Updates
             accumulator -= tick;
         }
-        UpdateManager.triggerUpdates("frame");
-        // 4. Request the next frame
         requestAnimationFrame(gameLoop);
     }
 

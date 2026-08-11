@@ -1,11 +1,13 @@
-import type {WoodType } from "./data.js";
+import type {WoodType, AreaType } from "./data.js";
 
 export const GameData = {
     gold: 0 as number,
     prestige_tokens: 0 as number,
+    gold_this_run: 0 as number,
     upgrades: {} as Record<string,number>,
-    selected_area: "Forest" as string,
+    selected_area: "Forest" as AreaType,
     chop_progress: {} as Record<WoodType,number>,
+    chop_count : {} as Record<WoodType,number>,
 }
 
 
@@ -23,15 +25,9 @@ export function loadGame() {
         GameData.prestige_tokens = parsed.prestigeTokens ?? 0;
         GameData.upgrades = parsed.upgrades ?? {};
         GameData.selected_area = parsed.selected_area ?? "Forest";
-    } else {
-        // Fallback: Reset to default values if no save state exists
-        GameData.gold = 0;
-        GameData.prestige_tokens = 0;
-        GameData.upgrades = {};
-        GameData.selected_area = "Forest";
     }
     
-    GameData.upgrades[`axe_unlocked`] = 1;
+    //GameData.upgrades[`axe_unlocked`] = 1;
 }
 
 export function resetGame() {

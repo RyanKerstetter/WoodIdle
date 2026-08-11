@@ -4,6 +4,7 @@ import { UpdateManager } from "./update_manager.js";
 import {  computeMultiplier } from "./multipliers.js";
 import { AreaData, BlacksmithUpgradeData, EffectType, LevelData, WoodType, CompoundingUpgrade, Requirement, IndividualAreaUpgradeData, AreaType, formatCostType } from "./data.js";
 import { formatString } from "./util.js";
+import { applyDamage } from "./game.js";
 
 export function iconHtml(name: string, alt: string = '', size: number = 24): string {
   return `<img src="res/${name}" alt="${alt}" width="${size}" height="${size}" class="icon" />`;
@@ -109,16 +110,17 @@ function render_blacksmith_upgrade(upgrade: BlacksmithUpgradeData): HTMLElement 
             GameData.gold -= upgrade.cost;
             GameData.upgrades[upgradeId] = 1;
         }
+        UpdateManager.triggerAllUpdates();
     };
 
     return upgradeElement;
 }
 
-export function render_level_upgrade(level: LevelData, woodName: string): HTMLElement {
+export function render_level_upgrade(level: LevelData, wood: WoodType): HTMLElement {
     const levelElement = document.createElement('div');
     levelElement.classList.add('level-card-wrapper');
 
-    const formattedWood = woodName.charAt(0).toUpperCase() + woodName.slice(1);
+    const formattedWood = wood.charAt(0).toUpperCase() + wood.slice(1);
     const description = level.description || "No description available";
 
     levelElement.innerHTML = `
@@ -136,7 +138,7 @@ export function render_level_upgrade(level: LevelData, woodName: string): HTMLEl
 
     // Real-time update for unlocked state
     UpdateManager.registerUpdate("tick", () => {
-        const currentChops = GameData.upgrades[`${woodName.toLowerCase()}_chopped`] || 0;
+        const currentChops = GameData.chop_count[wood] || 0;
         const isUnlocked = currentChops >= level.required_chops;
 
         if (statusText) {
@@ -163,7 +165,7 @@ function render_area_upgrade(upgrade: IndividualAreaUpgradeData, area: AreaType)
     upgradeElement.classList.add('upgrade');
 
     const replacementContext = {
-        wood_name: FileData.area_to_wood_map[area] || "unknown",
+        wood_name: FileData.area_to_wood[area] || "unknown",
     };
     const upgradeId = formatString(upgrade.upgrade_id, replacementContext);
     const cost = upgrade.getUpgrade(area).getCost();
@@ -171,7 +173,7 @@ function render_area_upgrade(upgrade: IndividualAreaUpgradeData, area: AreaType)
     if(!effect)
         return upgradeElement;
     const level = effect?.getLevel() || 0;
-    const value = effect?.computeValueAt(level) || 1;
+    const value = effect?.computeValueAt(level) || 0;
     const next_value = effect?.computeValueAt(level+1) || 1;
 
     upgradeElement.innerHTML = `
@@ -215,6 +217,7 @@ function render_area_upgrade(upgrade: IndividualAreaUpgradeData, area: AreaType)
         costButton.textContent = `${formatNumber(cost)} Gold`;
         levelElement.textContent = `${new_level}`;
         effectElement.textContent =  `${formatNumber(new_value)}x > ${formatNumber(new_next_value)}x`
+        UpdateManager.triggerAllUpdates();
     };
     return upgradeElement;
 }
@@ -284,7 +287,7 @@ function render_area_selector() {
         areaElement.onclick = () => {
             if(requirement && !requirement.isMet()) return; // Not unlocked yet
             console.log(`Setting to ${area.name}`)
-            GameData.selected_area = area.name;
+            GameData.selected_area = area.name as AreaType;
             UpdateManager.triggerUpdates("tick");
         }
 
@@ -324,14 +327,17 @@ function render_area_upgrades() {
         areaUpgradeContainer.classList.add('hidden');
         areaUpgradeElement.appendChild(areaUpgradeContainer);
         
-        const render1 = render_area_upgrade(FileData.area_upgrade_data.chop_speed_upgrade, areaType);
-        const render2 = render_area_upgrade(FileData.area_upgrade_data.chop_yield_upgrade, areaType);
-        const render3 = render_area_upgrade(FileData.area_upgrade_data.log_sell_price_upgrade, areaType);
-        const render4 = render_area_upgrade(FileData.area_upgrade_data.bulk_chop_upgrade, areaType);
+        const render1 = render_area_upgrade(FileData.area_upgrade_data.worker_upgrade, areaType);
+        const render2 = render_area_upgrade(FileData.area_upgrade_data.chop_damage_upgrade, areaType);
+        const render3 = render_area_upgrade(FileData.area_upgrade_data.chop_yield_upgrade, areaType);
+        const render4 = render_area_upgrade(FileData.area_upgrade_data.log_sell_price_upgrade, areaType);
+        const render5 = render_area_upgrade(FileData.area_upgrade_data.bulk_chop_upgrade, areaType);
+        
         areaUpgradeContainer.appendChild(render1);
         areaUpgradeContainer.appendChild(render2);
         areaUpgradeContainer.appendChild(render3);
         areaUpgradeContainer.appendChild(render4);
+        areaUpgradeContainer.appendChild(render5);
 
         UpdateManager.registerUpdate("tick", () => {
             areaUpgradeContainer.classList.toggle('hidden', GameData.selected_area != area.name);
@@ -339,10 +345,34 @@ function render_area_upgrades() {
     });
 }
 
+
+
+function canvas_on_click(x: number, y:number){
+    const currentArea = GameData.selected_area;
+    const wood = FileData.area_to_wood[currentArea];
+    const damage = computeMultiplier(EffectType.ChopDamage,wood); 
+
+    applyDamage(wood,damage);
+    UpdateManager.triggerAllUpdates();
+}
+
 function render_main(){
     const goldElement: HTMLElement | null = document.getElementById("gold");
     const prestigeTokenElement: HTMLElement  | null = document.getElementById("prestige-tokens");
+    const treeElement: HTMLElement | null = document.getElementById("wood_canvas");
     if(!goldElement || !prestigeTokenElement) return;
+
+    const thunkSound = new Audio("res/thunk.wav");
+    thunkSound.preload = "auto";
+
+    if (treeElement) {
+        treeElement.addEventListener("click", (event) => {
+            const clone = thunkSound.cloneNode() as HTMLAudioElement;
+            clone.currentTime = 0;
+            clone.play().catch(() => undefined);
+            canvas_on_click(event.x,event.y);
+        });
+    }
     UpdateManager.registerUpdate("tick", () => {
         if(!goldElement || !prestigeTokenElement) return;
         goldElement.innerText = `${formatNumber(GameData.gold)}`;
@@ -353,7 +383,7 @@ function render_main(){
 
     const woodTypeBox: HTMLElement | null = document.getElementById("wood-type-box");
 
-    const timeRequired: HTMLElement | null = document.getElementById("time-required");
+    const healthRatio: HTMLElement | null = document.getElementById("health-ratio");
     const woodCount: HTMLElement | null = document.getElementById("wood-count");
     const chopSpeed: HTMLElement | null = document.getElementById("chop-speed");
     const sellPrice: HTMLElement | null = document.getElementById("sell-price");
@@ -363,7 +393,7 @@ function render_main(){
     const progressTextRatio: HTMLElement | null = document.getElementById("level-progress-text");
     const progressTextLevel: HTMLElement | null = document.getElementById("level-target-text");
     const progressBarChop: HTMLElement | null = document.getElementById("chop-progress-bar");
-    if (!progressBarLevel || !progressTextRatio || !progressTextLevel || !progressBarChop || !timeRequired || !woodCount
+    if (!progressBarLevel || !progressTextRatio || !progressTextLevel || !progressBarChop || !healthRatio || !woodCount
         || !chopSpeed || !sellPrice || !profit || !woodTypeBox
     ){
         console.log("failed to render progress bar")
@@ -380,35 +410,27 @@ function render_main(){
             woodTypeBox.innerText = wood.at(0)?.toUpperCase() + wood.slice(1) || "Unknown";
 
             const chopProgress = GameData.chop_progress[wood]; 
-            const baseTime = value.wood.base_chop_time;
-            const timeMultiplier = computeMultiplier(EffectType.ChopTime,wood);
-            const requiredTime = baseTime * timeMultiplier;
-            const ratio = chopProgress / requiredTime;   
+            const baseHealth = value.wood.base_tree_health;
+            const healthMultiplier = computeMultiplier(EffectType.TreeHealth,wood);
+            const totalHealth = baseHealth * healthMultiplier;
+            const ratio = (totalHealth - chopProgress) / totalHealth;   
             const percentage = ratio * 100;
             progressBarChop.style.width = `${percentage}%`;
 
-            const remainingTime = requiredTime - chopProgress;
-            const speedMultiplier = computeMultiplier(EffectType.ChoppingSpeed,wood);
-            const seconds = remainingTime / speedMultiplier;
-            timeRequired.innerText = `${seconds.toFixed(1)}s`;
-
+            healthRatio.innerText = `${formatNumber(totalHealth - chopProgress)}/${formatNumber(totalHealth)}`;
             const amountChopped = computeMultiplier(EffectType.ChopYield, wood);
-            const str = formatNumber(amountChopped) + (amountChopped > 1 ? " logs" : " log");
-            woodCount.innerText = str;
+            woodCount.innerText = formatNumber(amountChopped) + (amountChopped > 1 ? " Logs" : " Log");
 
-            const speed = computeMultiplier(EffectType.ChoppingSpeed, wood);
-            chopSpeed.innerText = `Chop Speed: ${speed.toFixed(2)}x`;
+            const damage = computeMultiplier(EffectType.ChopDamage, wood);
+            chopSpeed.innerText = `Chop Damage: ${formatNumber(damage)}x`;
 
             const sellPriceValue = computeMultiplier(EffectType.SellPrice, wood) * value.wood.base_sell_price;
-            const formattedPrice = formatNumber(sellPriceValue);
-            sellPrice.innerText = `Sell Price: $${formattedPrice}`;
+            sellPrice.innerText = `Sell Price: $${formatNumber(sellPriceValue)}`;
 
             const profitValue = sellPriceValue * amountChopped;
-            const formattedProfit = formatNumber(profitValue);
-            profit.innerText = `Profit: $${formattedProfit}`;
+            profit.innerText = `Profit: $${formatNumber(profitValue)}`;
 
-            const key = `${wood}_chopped`;
-            const currentChops = GameData.upgrades[key] || 0;
+            const currentChops = GameData.chop_count[wood] || 0;
 
             const levelData: LevelData[] = FileData.wood_levels[wood] || [];
             // Search for the current level

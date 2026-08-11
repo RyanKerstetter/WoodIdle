@@ -1,11 +1,32 @@
 {
-    "chop_speed_upgrade": {
-        "name": "Chop Speed",
+    "worker_upgrade": {
+        "name": "Oak Workers",
+        "description": "Increases chopping speed by {value}% per level.",
+        "upgrade_id": "worker_upgrade_${wood}",
+        
+        "base_costs" : {
+            "forest": 100,
+            "meadow": 500,
+            "tundra": 1000,
+            "desert": 10000,
+            "swamp": 100000
+        },
+        "cost_multiplier": 100,
+        "effects": [
+            {
+                "type": "worker_count",
+                "value": 1,
+                "apply_type":"flat"
+            }
+        ]
+    },
+    "chop_damage_upgrade": {
+        "name": "Oak Chop Damage",
         "description": "Increases chopping speed by {value}% per level.",
         "upgrade_id": "chop_speed_upgrade_${wood}",
         
         "base_costs" : {
-            "forest": 10,
+            "forest": 300,
             "meadow": 500,
             "tundra": 1000,
             "desert": 10000,
@@ -14,8 +35,8 @@
         "cost_multiplier": 3,
         "effects": [
             {
-                "type": "chop_speed",
-                "value": 1.5
+                "type": "chop_damage",
+                "value": 2
             }
         ],
         "ascensions" : {
@@ -25,7 +46,7 @@
             "cost_multiplier": 100,
             "effects": [
                 {
-                    "type": "chop_speed",
+                    "type": "chop_damage",
                     "value": 10
                 }
             ]
@@ -33,31 +54,12 @@
 
     },
     "chop_yield_upgrade" : {
-        "name": "Chop Yield",
+        "name": "Oak Chop Yield",
         "description": "Increases chopping yield by {value}% per level.",
         "upgrade_id": "chop_yield_upgrade_${wood}",
         "base_costs" : {
-            "forest": 10,
+            "forest": 200,
             "meadow": 500,
-            "tundra": 1000,
-            "desert": 10000,
-            "swamp": 100000
-        },
-        "cost_multiplier": 3,
-        "effects": [
-            {
-                "type": "chop_yield",
-                "value": 1.5
-            }
-        ]
-    },
-    "log_sell_price_upgrade" : {
-        "name": "Log Sell Price",
-        "description": "Increases log sell price by {value}% per level.",
-        "upgrade_id": "log_sell_price_upgrade_${wood}",
-        "base_costs" : {
-            "forest": 50,
-            "meadow": 1000,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000
@@ -65,13 +67,32 @@
         "cost_multiplier": 5,
         "effects": [
             {
-                "type": "sell_price",
+                "type": "chop_yield",
                 "value": 2
             }
         ]
     },
+    "log_sell_price_upgrade" : {
+        "name": "Oak Log Sell Price",
+        "description": "Increases log sell price by {value}% per level.",
+        "upgrade_id": "log_sell_price_upgrade_${wood}",
+        "base_costs" : {
+            "forest": 100,
+            "meadow": 1000,
+            "tundra": 1000,
+            "desert": 10000,
+            "swamp": 100000
+        },
+        "cost_multiplier": 3,
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 1.5
+            }
+        ]
+    },
     "bulk_chop_upgrade" : {
-        "name": "Bulk Chop",
+        "name": "Oak Tree Level",
         "description": "Allows chopping multiple logs at once.",
         "upgrade_id": "bulk_chop_upgrade_${wood}",
         "base_costs" : {
@@ -84,13 +105,18 @@
         "cost_multiplier": 16,
         "effects": [
             {
-                "type": "chop_time",
-                "value": 2,
+                "type":"dummy",
+                "value":2,
+                "apply_type":"multiplicative"
+            },
+            {
+                "type": "tree_health",
+                "value": 3,
                 "apply_type":"multiplicative"
             },
             {
                 "type": "chop_yield",
-                "value": 4,
+                "value": 6,
                 "apply_type":"multiplicative"
             }
         ]

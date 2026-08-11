@@ -40,10 +40,11 @@ export function formatCostType(type: CostType){
 }
 
 export enum EffectType {
-    ChoppingSpeed = "chop_speed",
+    WorkerCount = "worker_count",
+    ChopDamage = "chop_damage",
     ChopYield = "chop_yield",
     SellPrice = "sell_price",
-    ChopTime = "chop_time", // This multiplier increases the time required for each load. This is basically an inverse chopping speed
+    TreeHealth = "tree_health",
 }
 
 export enum ApplyType {
@@ -100,8 +101,9 @@ export class Effect {
     computeValueAt(level: number): number {
         if (this.apply_type === ApplyType.Additive)
             return (this.value - 1) * level + 1; // Convert to additive, then back to multiplicative
-        if(this.apply_type === ApplyType.Flat)
+        if(this.apply_type === ApplyType.Flat){
             return this.value * level;
+        }
         return this.value ** level; // Multiplicative stacking
     }
 
@@ -282,15 +284,15 @@ export class AreaUpgrades {
     }
 }
 
-class WoodData {
+export class WoodData {
     name: string;
-    base_chop_time: number;
+    base_tree_health: number;
     base_chop_yield: number;
     base_sell_price: number;
 
     constructor(data: any) {
         this.name = data.name;
-        this.base_chop_time = data.base_chop_time;
+        this.base_tree_health = data.base_tree_health;
         this.base_chop_yield = data.base_chop_yield;
         this.base_sell_price = data.base_sell_price;
     }
@@ -344,13 +346,15 @@ export class LevelData {
 }
 
 export class AreaUpgradeData {
-    chop_speed_upgrade: IndividualAreaUpgradeData;
+    worker_upgrade: IndividualAreaUpgradeData;
+    chop_damage_upgrade: IndividualAreaUpgradeData;
     chop_yield_upgrade: IndividualAreaUpgradeData;
     log_sell_price_upgrade: IndividualAreaUpgradeData;
     bulk_chop_upgrade: IndividualAreaUpgradeData;
 
     constructor(data: any) {
-        this.chop_speed_upgrade = new IndividualAreaUpgradeData(data.chop_speed_upgrade);
+        this.worker_upgrade = new IndividualAreaUpgradeData(data.worker_upgrade);
+        this.chop_damage_upgrade = new IndividualAreaUpgradeData(data.chop_damage_upgrade);
         this.chop_yield_upgrade = new IndividualAreaUpgradeData(data.chop_yield_upgrade);
         this.log_sell_price_upgrade = new IndividualAreaUpgradeData(data.log_sell_price_upgrade);
         this.bulk_chop_upgrade = new IndividualAreaUpgradeData(data.bulk_chop_upgrade);
@@ -391,7 +395,7 @@ export class IndividualAreaUpgradeData {
         this.upgrades = {} as Record<AreaType, AreaUpgrade>;
 
         for(const area of Object.values(AreaType)){
-            const wood =  FileData.area_to_wood_map[area];
+            const wood =  FileData.area_to_wood[area];
             const replacementContext = {
                 wood: wood || "unknown",
             };
@@ -413,7 +417,7 @@ export class IndividualAreaUpgradeData {
 
     getCurrentCost(area: AreaType): number {
         const replacementContext = {
-            wood: FileData.area_to_wood_map[area] || "unknown",
+            wood: FileData.area_to_wood[area] || "unknown",
         };
         const upgradeId = formatString(this.upgrade_id, replacementContext);
         console.log(this.upgrade_id,upgradeId,replacementContext);

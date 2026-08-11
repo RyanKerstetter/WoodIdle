@@ -145,7 +145,7 @@ html, body {
 
 /* Column Panel Sizes */
 #building-area {
-    flex: 1.2;                 /* Large left panel for Blacksmith/Library */
+    flex: 1.2;                 
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -161,10 +161,11 @@ html, body {
 
 
 #side-area {
-    flex: 1;                   /* Middle panel for levels and upgrades */
+    flex: 1.5;                   /* Middle panel for levels and upgrades */
     display: flex;
     flex-direction: column;    /* Explicitly stacks its content top-to-bottom */
     gap: calc(var(--padding-base) * 2);
+    width: 50%;
     overflow: hidden;          /* Inner containers handle scrolling */
 }
 
@@ -213,9 +214,12 @@ html, body {
 
 /* Main Chop Canvas */
 #wood_canvas {
-    flex-grow: 1;
     width: 100%;
-    background-color: #0b0f0c; /* Deep custom black viewport background */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    background-color: #0b0f0c;
     border-radius: var(--radius-base);
     border: 1px solid var(--border-color);
 }
@@ -456,6 +460,18 @@ html, body {
     border: 1px solid var(--border-color);
 }
 
+#blacksmith{
+  /* Set the background image 
+  background-image: url('res/panel-1.jpg');
+  //background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Sizing behavior (see options below) 
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  */
+}
 
 .blacksmith-title {
     position: sticky;

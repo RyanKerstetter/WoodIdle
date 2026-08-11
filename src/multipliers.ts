@@ -33,8 +33,8 @@ function initializeUpgradeCalculator() {
             wood: woodNameLower,
         };
         
-        const chopSpeedName = formatString(FileData.area_upgrade_data.chop_speed_upgrade.upgrade_id, replacementContext);
-        const chopSpeedEffect = new Effect(FileData.area_upgrade_data.chop_speed_upgrade.effects[0], chopSpeedName);
+        const chopSpeedName = formatString(FileData.area_upgrade_data.chop_damage_upgrade.upgrade_id, replacementContext);
+        const chopSpeedEffect = new Effect(FileData.area_upgrade_data.chop_damage_upgrade.effects[0], chopSpeedName);
         UpgradeCalculator.addEffect(chopSpeedEffect);
         const chopYieldName = formatString(FileData.area_upgrade_data.chop_yield_upgrade.upgrade_id, replacementContext);
         const chopYieldEffect = new Effect(FileData.area_upgrade_data.chop_yield_upgrade.effects[0], chopYieldName);
@@ -117,7 +117,7 @@ export const LevelCalculator = {
     calculate(effectType: EffectType,woodType: WoodType | null = null): number {
         var mult = 1;
         for(const indexType of Object.values(WoodType)) {
-            const chopped = GameData.upgrades[`${indexType}_chopped`] || 0;
+            const chopped = GameData.chop_count[indexType] || 0;
             if(!FileData.wood_levels[indexType]) {
                 continue;
             }
