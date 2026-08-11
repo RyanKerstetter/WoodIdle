@@ -2,7 +2,7 @@
     {
         "name": "Basic Rock",
         "upgrade_id" : "basic_rock",
-        "description": "1.5x chopping yield",
+        "description": "1.5x chop yield",
         "cost": 1e2,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -17,7 +17,7 @@
     {
         "name": "Hard Rock",
         "upgrade_id" : "hard_rock",
-        "description": "3x chopping yield",
+        "description": "3x chop yield",
         "cost": 1e4,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -32,7 +32,7 @@
     {
         "name": "Sharp Rock",
         "upgrade_id" : "sharp_rock",
-        "description": "6x chopping yield",
+        "description": "6x chop yield",
         "cost": 2e6,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -47,7 +47,7 @@
     {
         "name": "Stone Hatchet",
         "upgrade_id" : "stone_hatchet",
-        "description": "10x chopping yield",
+        "description": "10x chop yield",
         "cost": 8e8,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -62,7 +62,7 @@
     {
         "name": "Stone Axe",
         "upgrade_id" : "stone_axe",
-        "description": "20x chopping yield",
+        "description": "20x chop yield",
         "cost": 2e11,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -77,7 +77,7 @@
     {
         "name": "Iron Hatchet",
         "upgrade_id" : "iron_hatchet",
-        "description": "40x chopping yield",
+        "description": "40x chop yield",
         "cost": 4e13,
         "cost_type": "gold",
         "equip_location": "axe",
@@ -92,7 +92,7 @@
     {
         "name": "Iron Axe",
         "upgrade_id" : "iron_axe",
-        "description": "100x chopping yield",
+        "description": "100x chop yield",
         "cost": 2e16,
         "cost_type": "gold",
         "equip_location": "axe",

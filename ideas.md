@@ -95,7 +95,7 @@ The library earns research over time
 Research can be spent on upgrades
 These ugprades contain the core of the automation
 
-# Jungle : TOwn
+# Jungle : Town
 
 The town is the area where you can hire people
 Manager     - Manager amount adds to the exponent for other multipliers 
@@ -107,6 +107,27 @@ Blacksmith  - N^(1+.01*M) times multiplier to rebirth
 So 10 lumberjacks and 10 managers = 10^1.1 * multiplier for logs chopped
 
 # Desert : Camp
+
+Unlocks missions
+You can hire mercenaries to go on missions for you
+They will bring back loot that can be used for upgrades
+
+Progression:
+You start with 1 mercenary slot
+You can upgrade this with prestige tokens
+
+Mercenaries can be assigned missions
+
+Missions increase a stat whenever done
+For example
+Chop Speed
+Sell Price
+Prestige Token multiplier
+etc.
+Missions have 4 associated stats
+0-25 25-50 50-75 and 75-100
+As the mission levels up it scales all stats.
+
 
 
 

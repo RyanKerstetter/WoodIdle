@@ -117,8 +117,17 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: var(--padding-base);
-    overflow-y: auto;          /* Allow levels and local modifications to scroll inside constraints */
-    padding-right: 4px;
+    min-height: 0;
+}
+
+#levels {
+    overflow: hidden;
+}
+
+#area-upgrades {
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-gutter: stable;
 }
 
 
@@ -139,7 +148,15 @@ html, body {
     flex: 1.2;                 /* Large left panel for Blacksmith/Library */
     display: flex;
     flex-direction: column;
-    overflow-y: auto;          /* Scrollable upgrades list */
+    overflow: hidden;
+}
+
+#blacksmith {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-gutter: stable;
 }
 
 
@@ -239,9 +256,17 @@ html, body {
 
 
 #level-top {
+    flex-shrink: 0;
     margin-bottom: 10px;
 }
 
+#level-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-gutter: stable;
+}
 
 /* Card Container */
 /* Container using card background and borders */
@@ -433,12 +458,16 @@ html, body {
 
 
 .blacksmith-title {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-primary);
     margin: 0 0 16px 0; /* Tight, controlled bottom spacing */
-    padding-bottom: 8px;
+    padding: 4px 0 8px 0;
     border-bottom: 1px solid var(--border-color); /* Clean dividing line */
+    background-color: var(--bg-card);
 }
 
 /* Category Headers (Axe, Gloves, etc.) */

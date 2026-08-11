@@ -293,16 +293,17 @@ function render_area_selector() {
 
 function render_levels() {
     const levelElement = document.getElementById('levels');
-    if (!levelElement) return;
+    const levelList = document.getElementById('level-list');
+    if (!levelElement || !levelList) return;
     FileData.areas.forEach((area: AreaData) => {
         const levelContainer = document.createElement('div');
         const wood: WoodType = area.wood.name as WoodType;
         levelContainer.id = `${wood}-levels`;
-        levelElement.appendChild(levelContainer);
+        levelList.appendChild(levelContainer);
         const levelData: LevelData[] = FileData.wood_levels[wood] || [];
         levelData.forEach((l: LevelData) => {
-            const levelElement = render_level_upgrade(l, area.wood.name as WoodType);
-            levelContainer.appendChild(levelElement);
+            const levelCard = render_level_upgrade(l, area.wood.name as WoodType);
+            levelContainer.appendChild(levelCard);
         });
         UpdateManager.registerUpdate("tick", () => {
             levelContainer.classList.toggle('hidden', GameData.selected_area != area.name);

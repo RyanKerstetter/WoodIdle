@@ -2,6 +2,7 @@
     {
         "level": 1,
         "required_chops": 1e7,
+        "description": "1.5x chop speed",
         "effects": [
             {
                 "type": "chopping_speed",
@@ -12,70 +13,77 @@
     {
         "level": 2,
         "required_chops": 1e8,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 3,
         "required_chops": 1e9,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 4,
         "required_chops": 1e10,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 5,
         "required_chops": 1e11,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 6,
         "required_chops": 1e12,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 7,
         "required_chops": 1e13,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     },
     {
         "level": 8,
         "required_chops": 1e14,
+        "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_amount",
-                "value": 2
+                "type": "chop_yield",
+                "value": 1.5
             }
         ]
     }
