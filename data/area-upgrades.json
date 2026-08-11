@@ -1,12 +1,12 @@
 {
     "worker_upgrade": {
-        "name": "Oak Workers",
+        "name": "${wood} Workers",
         "description": "Increases chopping speed by {value}% per level.",
         "upgrade_id": "worker_upgrade_${wood}",
         
         "base_costs" : {
             "forest": 100,
-            "meadow": 500,
+            "meadow": 1e10,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000
@@ -21,13 +21,13 @@
         ]
     },
     "chop_damage_upgrade": {
-        "name": "Oak Chop Damage",
+        "name": "${wood} Chop Damage",
         "description": "Increases chopping speed by {value}% per level.",
         "upgrade_id": "chop_speed_upgrade_${wood}",
         
         "base_costs" : {
             "forest": 300,
-            "meadow": 500,
+            "meadow": 5e9,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000
@@ -54,12 +54,12 @@
 
     },
     "chop_yield_upgrade" : {
-        "name": "Oak Chop Yield",
+        "name": "${wood} Chop Yield",
         "description": "Increases chopping yield by {value}% per level.",
         "upgrade_id": "chop_yield_upgrade_${wood}",
         "base_costs" : {
             "forest": 200,
-            "meadow": 500,
+            "meadow": 5e9,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000
@@ -73,12 +73,12 @@
         ]
     },
     "log_sell_price_upgrade" : {
-        "name": "Oak Log Sell Price",
+        "name": "${wood} Log Sell Price",
         "description": "Increases log sell price by {value}% per level.",
         "upgrade_id": "log_sell_price_upgrade_${wood}",
         "base_costs" : {
             "forest": 100,
-            "meadow": 1000,
+            "meadow": 1e10,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000
@@ -92,12 +92,12 @@
         ]
     },
     "bulk_chop_upgrade" : {
-        "name": "Oak Tree Level",
+        "name": "${wood} Tree Level",
         "description": "Allows chopping multiple logs at once.",
         "upgrade_id": "bulk_chop_upgrade_${wood}",
         "base_costs" : {
             "forest": 400,
-            "meadow": 100000,
+            "meadow": 2e10,
             "tundra": 1000,
             "desert": 10000,
             "swamp": 100000

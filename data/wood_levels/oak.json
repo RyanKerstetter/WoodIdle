@@ -2,12 +2,13 @@
     {
         "level": 1,
         "required_chops": 1e1,
-        "description": "Unlock Automation",
-        "effects": [],
-        "custom" : {
-            "id": "automation_unlocked",
-            "value": 1
-        }
+        "description": "2x Sell Price",
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 2
+            }
+        ]
     },
     {
         "level": 2,
@@ -22,7 +23,7 @@
     },{
         "level": 3,
         "required_chops": 1e3,
-        "description": "Unlock the Axe in the Blacksmith",
+        "description": "Unlock Axes in the Blacksmith",
         "effects": [],
         "custom": {
             "id": "axe_unlocked",
@@ -53,17 +54,6 @@
     {
         "level": 6,
         "required_chops": 1e6,
-        "description": "1.5x chop yield",
-        "effects": [
-            {
-                "type": "chop_yield",
-                "value": 1.5
-            }
-        ]
-    },
-    {
-        "level": 7,
-        "required_chops": 1e7,
         "description": "1.5x chop damage",
         "effects": [
             {
@@ -73,12 +63,23 @@
         ]
     },
     {
-        "level": 8,
-        "required_chops": 1e8,
+        "level": 7,
+        "required_chops": 1e7,
         "description": "1.5x chop yield",
         "effects": [
             {
-                "type": "chop_speed",
+                "type": "chop_yield",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 8,
+        "required_chops": 1e8,
+        "description": "1.5x sell price",
+        "effects": [
+            {
+                "type": "sell_price",
                 "value": 1.5
             }
         ]
@@ -86,11 +87,11 @@
     {
         "level": 9,
         "required_chops": 1e9,
-        "description": "1.5x sell price",
+        "description": "2x chop damage",
         "effects": [
             {
-                "type": "sell_price",
-                "value": 1.5
+                "type": "chop_damage",
+                "value": 2
             }
         ]
     },

@@ -3,7 +3,7 @@
         "name": "Basic Rock",
         "upgrade_id" : "basic_rock",
         "description": "2x chop damage",
-        "cost": 1e4,
+        "cost": 6e4,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "rock.svg",
@@ -17,41 +17,26 @@
     {
         "name": "Hard Rock",
         "upgrade_id" : "hard_rock",
-        "description": "3x chop damage",
-        "cost": 1e6,
+        "description": "5x chop damage",
+        "cost": 8e7,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "hard-rock.svg",
         "effects": [
             {
                 "type": "chop_damage",
-                "value": 3
+                "value": 5
             }
         ]
     },
     {
         "name": "Sharp Rock",
         "upgrade_id" : "sharp_rock",
-        "description": "6x chop damage",
-        "cost": 2e8,
+        "description": "10x chop damage",
+        "cost": 4e10,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "sharp-rock.svg",
-        "effects": [
-            {
-                "type": "chop_damage",
-                "value": 6
-            }
-        ]
-    },
-    {
-        "name": "Stone Hatchet",
-        "upgrade_id" : "stone_hatchet",
-        "description": "10x chop damage",
-        "cost": 8e10,
-        "cost_type": "gold",
-        "equip_location": "axe",
-        "icon_path" : "stone-hatchet.svg",
         "effects": [
             {
                 "type": "chop_damage",
@@ -60,13 +45,13 @@
         ]
     },
     {
-        "name": "Stone Axe",
-        "upgrade_id" : "stone_axe",
+        "name": "Stone Hatchet",
+        "upgrade_id" : "stone_hatchet",
         "description": "20x chop damage",
-        "cost": 2e13,
+        "cost": 8e12,
         "cost_type": "gold",
         "equip_location": "axe",
-        "icon_path" : "stone-axe.svg",
+        "icon_path" : "stone-hatchet.svg",
         "effects": [
             {
                 "type": "chop_damage",
@@ -75,13 +60,13 @@
         ]
     },
     {
-        "name": "Iron Hatchet",
-        "upgrade_id" : "iron_hatchet",
+        "name": "Stone Axe",
+        "upgrade_id" : "stone_axe",
         "description": "40x chop damage",
-        "cost": 4e15,
+        "cost": 8e14,
         "cost_type": "gold",
         "equip_location": "axe",
-        "icon_path" : "iron-hatchet.svg",
+        "icon_path" : "stone-axe.svg",
         "effects": [
             {
                 "type": "chop_damage",
@@ -90,17 +75,32 @@
         ]
     },
     {
+        "name": "Iron Hatchet",
+        "upgrade_id" : "iron_hatchet",
+        "description": "80x chop damage",
+        "cost": 6e17,
+        "cost_type": "gold",
+        "equip_location": "axe",
+        "icon_path" : "iron-hatchet.svg",
+        "effects": [
+            {
+                "type": "chop_damage",
+                "value": 80
+            }
+        ]
+    },
+    {
         "name": "Iron Axe",
         "upgrade_id" : "iron_axe",
-        "description": "100x chop damage",
-        "cost": 2e18,
+        "description": "200x chop damage",
+        "cost": 2e20,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "iron-axe.svg",
         "effects": [
             {
                 "type": "chop_damage",
-                "value": 100
+                "value": 200
             }
         ]
     },
@@ -138,7 +138,7 @@
         "name": "Boxing Gloves",
         "upgrade_id" : "boxing_gloves",
         "description": "10x chop yield",
-        "cost": 1e12,
+        "cost": 8e12,
         "cost_type": "gold",
         "equip_location": "gloves",
         "icon_path" : "boxing-glove.svg",
