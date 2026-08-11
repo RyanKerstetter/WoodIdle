@@ -54,11 +54,11 @@
     {
         "level": 6,
         "required_chops": 1e6,
-        "description": "1.5x chop damage",
+        "description": "2x chop damage",
         "effects": [
             {
                 "type": "chop_damage",
-                "value": 1.5
+                "value": 2
             }
         ]
     },

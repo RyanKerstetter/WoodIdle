@@ -165,9 +165,10 @@ function render_area_upgrade(upgrade: IndividualAreaUpgradeData, area: AreaType)
     upgradeElement.classList.add('upgrade');
 
     const replacementContext = {
-        wood_name: FileData.area_to_wood[area] || "unknown",
+        wood: FileData.area_to_wood[area] || "unknown",
     };
-    const upgradeId = formatString(upgrade.upgrade_id, replacementContext);
+    const name = formatString(upgrade.name,replacementContext);
+    const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
     const cost = upgrade.getUpgrade(area).getCost();
     const effect = upgrade.getUpgrade(area).effects[0];
     if(!effect)
@@ -176,10 +177,11 @@ function render_area_upgrade(upgrade: IndividualAreaUpgradeData, area: AreaType)
     const value = effect?.computeValueAt(level) || 0;
     const next_value = effect?.computeValueAt(level+1) || 1;
 
+
     upgradeElement.innerHTML = `
         <div class="upgrade-card">
             <span class="upgrade-count">${level}</span>
-            <p class="upgrade-name">${upgrade.name}</p>
+            <p class="upgrade-name">${formattedName}</p>
             <p class="upgrade-effect">${formatNumber(value)}x &gt; ${formatNumber(next_value)}x</p>
             <button class="upgrade-cost">${formatNumber(cost)} Gold</button>
         </div>
@@ -409,7 +411,7 @@ function render_main(){
             const wood: WoodType = value.wood.name as WoodType;
             woodTypeBox.innerText = wood.at(0)?.toUpperCase() + wood.slice(1) || "Unknown";
 
-            const chopProgress = GameData.chop_progress[wood]; 
+            const chopProgress = GameData.chop_progress[wood] || 0; 
             const baseHealth = value.wood.base_tree_health;
             const healthMultiplier = computeMultiplier(EffectType.TreeHealth,wood);
             const totalHealth = baseHealth * healthMultiplier;
