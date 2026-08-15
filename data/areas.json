@@ -15,11 +15,11 @@
         "description": "A peaceful meadow with tall grass and wildflowers.",
         "wood" : {
             "name": "birch",
-            "base_tree_health": 500,
+            "base_tree_health": 1000,
             "base_chop_yield": 1,
             "base_sell_price": 1e7
         },
-        "building" : "Rebirth Shrine"
+        "building" : "Shrine"
     },
     {
         "name" : "Tundra",

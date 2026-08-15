@@ -79,12 +79,33 @@
     {
         "level": 8,
         "required_chops": 1e8,
-        "description": "1.5x chop yield",
+        "description": "1.5x chop damage",
         "effects": [
             {
-                "type": "chop_yield",
+                "type": "chop_damage",
                 "value": 1.5
             }
         ]
+    },
+    {
+        "level": 9,
+        "required_chops": 1e9,
+        "description": "1.5x Sell Price",
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 1.5
+            }
+        ]
+    },
+    {
+        "level": 10,
+        "required_chops": 1e10,
+        "description": "Unlock the Shrine",
+        "effects": [],
+        "custom": {
+            "id": "shrine_unlocked",
+            "value": 1
+        }
     }
 ]

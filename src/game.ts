@@ -1,7 +1,7 @@
-import { GameData, loadGame } from "./game_data.js";
+import { GameData, loadGame, setupAutoSave } from "./game_data.js";
 import { FileData, loadFiles } from "./files.js";
 import { render } from "./renderer.js";
-import { initializeMultipliers, computeMultiplier } from "./multipliers.js";
+import { initializeMultipliers, computeMultiplier,computeCount } from "./multipliers.js";
 import { UpdateManager } from "./update_manager.js";
 import { AreaData, EffectType, WoodType } from "./data.js";
 
@@ -44,7 +44,7 @@ function handleTick(deltaTime: number) {
 
         const wood: WoodType = value.wood.name as WoodType;
         const damageMultiplier = computeMultiplier(EffectType.ChopDamage, wood);
-        const workerCount = computeMultiplier(EffectType.WorkerCount,wood);
+        const workerCount = computeCount(EffectType.WorkerCount,wood);
         const totalDamage = damageMultiplier * ticks * workerCount;
 
         applyDamage(wood,totalDamage);
@@ -52,9 +52,10 @@ function handleTick(deltaTime: number) {
 }
 
 async function startGame() {
+    loadGame();
     await initializeGame();
     console.log("FileData", FileData);
-    loadGame();
+    setupAutoSave();
 
     let lastTime = performance.now();
     let accumulator = 0;

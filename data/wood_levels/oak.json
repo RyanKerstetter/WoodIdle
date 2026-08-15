@@ -108,10 +108,71 @@
     {
         "level": 11,
         "required_chops": 1e11,
+        "description": "1.2x chop damage",
         "effects": [
             {
                 "type": "chop_damage",
-                "value": 1.5
+                "value": 1.2
+            }
+        ]
+    },{
+        "level": 12,
+        "required_chops": 1e12,
+        "description": "1.2x chop damage",
+        "effects": [
+            {
+                "type": "chop_damage",
+                "value": 1.2
+            }
+        ]
+    },{
+        "level": 13,
+        "required_chops": 1e13,
+        "description": "1.2x Sell Price",
+        "effects": [
+            {
+                "type": "sell_price",
+                "value": 1.2
+            }
+        ]
+    },{
+        "level": 14,
+        "required_chops": 1e14,
+        "description": "1.2x chop yield",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 1.2
+            }
+        ]
+    },{
+        "level": 15,
+        "required_chops": 1e15,
+        "description": "1.2x Chop Damage",
+        "effects": [
+            {
+                "type": "chop_damage",
+                "value": 1.2
+            }
+        ]
+    },{
+        "level": 16,
+        "required_chops": 1e16,
+        "description": "1.2x chop damage",
+        "effects": [
+            {
+                "type": "chop_damage",
+                "value": 2
+            }
+        ]
+    },{
+        "level": 17,
+        "required_chops": 1e17,
+        "description": "1.2x Prestige Tokens",
+        "effects": [
+            {
+                "type": "prestige_gain",
+                "value": 2
             }
         ]
     },

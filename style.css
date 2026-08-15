@@ -121,7 +121,9 @@ html, body {
 }
 
 #levels {
-    overflow: hidden;
+    overflow: visible;
+    padding-right: 4px; /* ensure inner content has room and doesn't clip */
+    box-sizing: border-box;
 }
 
 #area-upgrades {
@@ -224,6 +226,22 @@ html, body {
     border: 1px solid var(--border-color);
 }
 
+#shrine {
+    display: flex;
+    flex-direction: column;
+}
+
+#shrine-canvas{
+    flex: 1;
+    min-height: 600px; /* <--- Prevents vertical collapse */
+    touch-action: none; /* Prevents mobile page scrolling during drag/pan */
+    display: block;
+    object-fit: contain;
+    background-color: #0b0f0c;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+}
+
 
 .progress-container {
     width: 100%;
@@ -262,6 +280,11 @@ html, body {
 #level-top {
     flex-shrink: 0;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #level-list {

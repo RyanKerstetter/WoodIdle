@@ -40,6 +40,10 @@ export function formatCostType(type: CostType){
 }
 
 export enum EffectType {
+    AreaUpgradeDiscount = "area_upgrade_discount", // All area upgrade costs get divided by this so 2x would be 50% off
+    BlacksmithDiscount = "blacksmith_discount",    // Blacksmith discounts work the same way
+    PrestigeTokenMultiplier = "prestige_token_multipler",
+    WorkSpeedReduction = "work_speed_reduction",
     WorkerCount = "worker_count",
     ChopDamage = "chop_damage",
     ChopYield = "chop_yield",
@@ -461,5 +465,50 @@ export class BaseCosts {
             case AreaType.Swamp:
                 return this.swamp;
         }
+    }
+}
+
+export class ShrineNode {
+    node_id: string;
+    upgrade_id: string;
+    name: string;
+    description: string;
+    icon: string;
+    position: { x: number; y: number };
+    effects: Effect[] = [];
+    max_upgrades: number;
+    base_cost: number;
+    cost_multiplier: number;
+
+    constructor(data: any) {
+        this.node_id = data.id;
+        this.upgrade_id = (data.upgrade_id || "").toString().trim();
+        this.name = data.name;
+        this.description = data.description || "";
+        this.icon = data.icon || "";
+        this.position = {
+            x: Number(data.position?.x) || 0,
+            y: Number(data.position?.y) || 0,
+        };
+        this.max_upgrades = Number(data.max_upgrades) || 0;
+        this.base_cost = Number(data.base_cost) || 0;
+        this.cost_multiplier = Number(data.cost_multiplier) || 0;
+
+        let effectsData: any = data.effects;
+        if (Array.isArray(effectsData)) {
+            this.effects = effectsData.map((effect: any) => new Effect(effect, this.upgrade_id));
+        }
+    }
+}
+
+export class ShrineConnection {
+    id: string;
+    from_node_id: string;
+    to_node_id: string;
+
+    constructor(data: any) {
+        this.id = data.id;
+        this.from_node_id = data.from_node_id;
+        this.to_node_id = data.to_node_id;
     }
 }

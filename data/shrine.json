@@ -1,0 +1,673 @@
+{
+    "root_id": "node_msmue191_53851v",
+    "nodes": [
+        {
+            "id": "node_msmuacjl_y16aez",
+            "name": "1.1x Global Chop Damage Multiplier",
+            "description": "Multiplies chop damage by 1.1x (Multiplicative)",
+            "icon": "axe-in-stump.svg",
+            "position": {
+                "x": 400,
+                "y": -100
+            },
+            "upgrade_id": "shrine_global_chop_damage_10",
+            "effects": [
+                {
+                    "type": "chop_yield",
+                    "value": 1.1
+                }
+            ],
+            "max_upgrades": 100,
+            "base_cost": 10,
+            "cost_multiplier": 3
+        },
+        {
+            "id": "node_msmuag43_9y2c9o",
+            "name": "1.1x Global Chop Yield Multiplier",
+            "description": "Multiplies chop yield by 1.1x (Multiplicative)",
+            "icon": "wood-pile.svg",
+            "position": {
+                "x": 400,
+                "y": -200
+            },
+            "upgrade_id": "shrine_global_chop_yield_10",
+            "effects": [
+                {
+                    "type": "chop_yield",
+                    "value": 1.1
+                }
+            ],
+            "max_upgrades": 100,
+            "base_cost": 10,
+            "cost_multiplier": 3
+        },
+        {
+            "id": "node_msmuds9d_s8co1j",
+            "name": "1.1x Global Sell Price Multiplier",
+            "description": "",
+            "icon": "two-coins.svg",
+            "position": {
+                "x": 400,
+                "y": -300
+            },
+            "resource_costs": [
+                [
+                    {
+                        "resource_id": "res_msmua9im_r71s8c",
+                        "amount": 10
+                    }
+                ]
+            ],
+            "upgrade_id": "shrine_global_sell_price_10",
+            "effects": [
+                {
+                    "type": "sell_price",
+                    "value": 1.1
+                }
+            ],
+            "max_upgrades": 100,
+            "base_cost": 10,
+            "cost_multiplier": 3
+        },
+        {
+            "id": "node_msmue191_53851v",
+            "name": "Ascend",
+            "description": "2x bonus to global chop speed, chop yield, and sell price.",
+            "icon": "angel-outfit.svg",
+            "position": {
+                "x": 0,
+                "y": -200
+            },
+            "upgrade_id": "shrine_ascend",
+            "effects": [
+                {
+                    "type": "chop_yield",
+                    "value": 2
+                },
+                {
+                    "type": "chop_damage",
+                    "value": 2
+                },
+                {
+                    "type": "sell_price",
+                    "value": 2
+                }
+            ],
+            "max_upgrades": 1,
+            "base_cost": 10,
+            "cost_multiplier": 1
+        },
+        {
+            "id": "node_msmuhh6i_4k1xkz",
+            "name": "Blacksmith Amulet",
+            "description": "Unlock Amulets for the blacksmith",
+            "icon": "feather-necklace.svg",
+            "position": {
+                "x": -200,
+                "y": -400
+            },
+            "upgrade_id": "amulet_unlocked",
+            "effects": "",
+            "max_upgrades": 1,
+            "base_cost": 1000,
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmuoa3q_940039",
+            "name": "Blacksmith Shirt",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": -300,
+                "y": -400
+            },
+            "upgrade_id": "shirt_unlocked",
+            "effects": "",
+            "max_upgrades": 1,
+            "base_cost": 10000,
+            "cost_multiplier": 1
+        },
+        {
+            "id": "node_msmurrsv_ydllwm",
+            "name": "Oak Bonus",
+            "description": "2x bonus to oak chop speed, chop yield, and sell price.\n",
+            "icon": "oak.svg",
+            "position": {
+                "x": 0,
+                "y": 300
+            },
+            "upgrade_id": "shrine_oak_bonus\n",
+            "effects": "",
+            "max_upgrades": 5,
+            "base_cost": 500,
+            "cost_multiplier": 350000
+        },
+        {
+            "id": "node_msmut5nh_n4ywyc",
+            "name": "1.1x Oak Chop Yield Multiplier",
+            "description": "",
+            "icon": "wood-pile.svg",
+            "position": {
+                "x": 200,
+                "y": 300
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmutdn0_o2dld3",
+            "name": "1.1x Oak Sell Price Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 200
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmuupy6_o8na1q",
+            "name": "1.1x Oak Chop Speed Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 400
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmuwgce_sg0twq",
+            "name": "Birch Bonus",
+            "description": "2x bonus to oak chop speed, chop yield, and sell price.\n",
+            "icon": "",
+            "position": {
+                "x": 0,
+                "y": 700
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmux7m6_c75nac",
+            "name": "1.1x Birch Sell Price Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 600
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmux8kn_itfhtp",
+            "name": "1.1x Birch Chop Yield Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 700
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmux9ek_pqpy99",
+            "name": "1.1x Birch Chop Speed Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 800
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmv1188_fwposx",
+            "name": "Oak Chop Speed Multiplier",
+            "description": "Multiply oak chop speed by log_{10-x}(total oak chops)\n",
+            "icon": "",
+            "position": {
+                "x": -200,
+                "y": 300
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmv6eaf_o88lut",
+            "name": "1.1x Prestige Token Multiplier",
+            "description": "",
+            "icon": "holy-grail.svg",
+            "position": {
+                "x": -200,
+                "y": -200
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvd1ns_pea3zw",
+            "name": "Prestige Token Exponent +.01",
+            "description": "Raises the prestige token exponent by .05 per level. Base formula is gold^(.14) + 1",
+            "icon": "",
+            "position": {
+                "x": -300,
+                "y": -200
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": 1
+        },
+        {
+            "id": "node_msmvgjei_8j27vl",
+            "name": "Unlock Tundra and Bonus",
+            "description": "Unlocks the tundra area as well as 2x bonus to pine chop speed, chop yield, and sell price.\n",
+            "icon": "",
+            "position": {
+                "x": 0,
+                "y": 1100
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvmuyc_ogd7cz",
+            "name": "Blacksmith 90% discount",
+            "description": "Decrease cost of blacksmith items by 10x",
+            "icon": "ticket.svg",
+            "position": {
+                "x": 0,
+                "y": -400
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": [
+                {
+                    "type": "blacksmith_discount",
+                    "value": 10
+                }
+            ],
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvsru3_x4gwjc",
+            "name": "1.1x Pine Sell Price Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 1000
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvssum_qn4rvo",
+            "name": "1.1x Pine Chop Yield Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 1100
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvstqu_a8vjk3",
+            "name": "1.1x Pine Chop Speed Multiplier",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": 1200
+            },
+            "upgrade_id": "shrine_blacksmith_discount_90",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_msmvth8j_eymdb1",
+            "name": "50% Off All Area Upgrades",
+            "description": "",
+            "icon": "ticket.svg",
+            "position": {
+                "x": 200,
+                "y": -200
+            },
+            "upgrade_id": "shrine_area_upgrade_discount_50",
+            "effects": [
+                {
+                    "type": "area_upgrade_discount",
+                    "value": 2
+                }
+            ],
+            "max_upgrades": 50,
+            "base_cost": 20,
+            "cost_multiplier": 20
+        },
+        {
+            "id": "node_mspahdef_6bjiia",
+            "name": "Starting Workers",
+            "description": "",
+            "icon": "person.svg",
+            "position": {
+                "x": 200,
+                "y": 0
+            },
+            "upgrade_id": "",
+            "effects": "[{\"type\":\"worker_count\",\"value\": 1,\"apply_type\":\"flat\"]",
+            "max_upgrades": 10,
+            "base_cost": 100,
+            "cost_multiplier": 15
+        },
+        {
+            "id": "node_mspakcb3_qu94fw",
+            "name": "Faster Workers 1",
+            "description": "Reduce the worker time by .1 seconds\n",
+            "icon": "",
+            "position": {
+                "x": 200,
+                "y": -500
+            },
+            "upgrade_id": "shrine_faster_workers_1\n",
+            "effects": "",
+            "max_upgrades": 50,
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_mspakew6_5p08wc",
+            "name": "New Skill",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 300,
+                "y": -500
+            },
+            "upgrade_id": "",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        },
+        {
+            "id": "node_mspakfwy_ct4h1n",
+            "name": "New Skill",
+            "description": "",
+            "icon": "",
+            "position": {
+                "x": 400,
+                "y": -500
+            },
+            "upgrade_id": "",
+            "effects": "",
+            "max_upgrades": "",
+            "base_cost": "",
+            "cost_multiplier": ""
+        }
+    ],
+    "connections": [
+        {
+            "id": "conn_msmupp8z_i84jwm",
+            "from_node_id": "node_msmuhh6i_4k1xkz",
+            "to_node_id": "node_msmuoa3q_940039",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmusy1e_fwhk1l",
+            "from_node_id": "node_msmue191_53851v",
+            "to_node_id": "node_msmurrsv_ydllwm",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuuokk_z261uj",
+            "from_node_id": "node_msmurrsv_ydllwm",
+            "to_node_id": "node_msmutdn0_o2dld3",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuup28_isdexn",
+            "from_node_id": "node_msmurrsv_ydllwm",
+            "to_node_id": "node_msmut5nh_n4ywyc",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuuxzg_99dim9",
+            "from_node_id": "node_msmurrsv_ydllwm",
+            "to_node_id": "node_msmuupy6_o8na1q",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuy67u_zr8ckd",
+            "from_node_id": "node_msmurrsv_ydllwm",
+            "to_node_id": "node_msmuwgce_sg0twq",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuy6m7_24gsv3",
+            "from_node_id": "node_msmuwgce_sg0twq",
+            "to_node_id": "node_msmux7m6_c75nac",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuy70o_vxys5m",
+            "from_node_id": "node_msmuwgce_sg0twq",
+            "to_node_id": "node_msmux8kn_itfhtp",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmuy7gp_9yu5hb",
+            "from_node_id": "node_msmuwgce_sg0twq",
+            "to_node_id": "node_msmux9ek_pqpy99",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmv7ebf_s4dah7",
+            "from_node_id": "node_msmurrsv_ydllwm",
+            "to_node_id": "node_msmv1188_fwposx",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvhnmm_t7fieq",
+            "from_node_id": "node_msmuwgce_sg0twq",
+            "to_node_id": "node_msmvgjei_8j27vl",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvr7ww_jqgbrf",
+            "from_node_id": "node_msmuhh6i_4k1xkz",
+            "to_node_id": "node_msmvmuyc_ogd7cz",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvs348_cke1uy",
+            "from_node_id": "node_msmue191_53851v",
+            "to_node_id": "node_msmvmuyc_ogd7cz",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvsvn2_uphufi",
+            "from_node_id": "node_msmvgjei_8j27vl",
+            "to_node_id": "node_msmvsru3_x4gwjc",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvsw1u_glvo21",
+            "from_node_id": "node_msmvgjei_8j27vl",
+            "to_node_id": "node_msmvssum_qn4rvo",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvswf6_3ectde",
+            "from_node_id": "node_msmvgjei_8j27vl",
+            "to_node_id": "node_msmvstqu_a8vjk3",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvtjqr_e0qc8l",
+            "from_node_id": "node_msmue191_53851v",
+            "to_node_id": "node_msmvth8j_eymdb1",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvwwi5_41ojrf",
+            "from_node_id": "node_msmvth8j_eymdb1",
+            "to_node_id": "node_msmuds9d_s8co1j",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvwwws_16oh2b",
+            "from_node_id": "node_msmvth8j_eymdb1",
+            "to_node_id": "node_msmuag43_9y2c9o",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvwx8e_0y7r8e",
+            "from_node_id": "node_msmvth8j_eymdb1",
+            "to_node_id": "node_msmuacjl_y16aez",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvx2lh_85fpsz",
+            "from_node_id": "node_msmvd1ns_pea3zw",
+            "to_node_id": "node_msmv6eaf_o88lut",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_msmvxf9q_q3f9b7",
+            "from_node_id": "node_msmue191_53851v",
+            "to_node_id": "node_msmv6eaf_o88lut",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_mspavkyr_t25qzr",
+            "from_node_id": "node_msmvth8j_eymdb1",
+            "to_node_id": "node_mspahdef_6bjiia",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_mspavmq8_n2bgpg",
+            "from_node_id": "node_msmvth8j_eymdb1",
+            "to_node_id": "node_mspakcb3_qu94fw",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_mspavpxd_t4yucq",
+            "from_node_id": "node_mspakcb3_qu94fw",
+            "to_node_id": "node_mspakew6_5p08wc",
+            "required_rank": 1,
+            "logic": "AND"
+        },
+        {
+            "id": "conn_mspavqj7_yb3xa9",
+            "from_node_id": "node_mspakew6_5p08wc",
+            "to_node_id": "node_mspakfwy_ct4h1n",
+            "required_rank": 1,
+            "logic": "AND"
+        }
+    ],
+    "global_custom_fields": [
+        {
+            "id": "field_msp80l2z_h6nyv1",
+            "name": "upgrade_id",
+            "value": "shrine_blacksmith_discount_90",
+            "global": true
+        },
+        {
+            "id": "field_mspacb1q_jnw52r",
+            "name": "effects",
+            "global": true
+        },
+        {
+            "id": "field_mspal8x4_761l0c",
+            "name": "max_upgrades",
+            "global": true
+        },
+        {
+            "id": "field_mspamwj2_tc17a9",
+            "name": "base_cost",
+            "global": true
+        },
+        {
+            "id": "field_mspan2rw_nf8lgq",
+            "name": "cost_multiplier",
+            "global": true
+        },
+        {
+            "id": "field_msu2qelg_yp81kx",
+            "name": "icon",
+            "global": true
+        }
+    ]
+}

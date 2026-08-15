@@ -3,7 +3,7 @@
         "name": "Basic Rock",
         "upgrade_id" : "basic_rock",
         "description": "2x chop damage",
-        "cost": 6e4,
+        "cost": 8e4,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "rock.svg",
@@ -78,7 +78,7 @@
         "name": "Iron Hatchet",
         "upgrade_id" : "iron_hatchet",
         "description": "80x chop damage",
-        "cost": 6e17,
+        "cost": 6e19,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "iron-hatchet.svg",
@@ -93,7 +93,7 @@
         "name": "Iron Axe",
         "upgrade_id" : "iron_axe",
         "description": "200x chop damage",
-        "cost": 2e20,
+        "cost": 4e23,
         "cost_type": "gold",
         "equip_location": "axe",
         "icon_path" : "iron-axe.svg",
@@ -108,7 +108,7 @@
         "name": "Fingerless Gloves",
         "upgrade_id" : "fingerless_gloves",
         "description": "2x chop yield",
-        "cost": 1e7,
+        "cost": 2e8,
         "cost_type": "gold",
         "equip_location": "gloves",
         "icon_path" : "fingerless-gloves.svg",
@@ -123,7 +123,7 @@
         "name": "Leather Gloves",
         "upgrade_id" : "leather_gloves",
         "description": "5x chop yield",
-        "cost": 2e9,
+        "cost": 4e11,
         "cost_type": "gold",
         "equip_location": "gloves",
         "icon_path" : "leather-gloves.svg",
@@ -138,7 +138,7 @@
         "name": "Boxing Gloves",
         "upgrade_id" : "boxing_gloves",
         "description": "10x chop yield",
-        "cost": 8e11,
+        "cost": 8e13,
         "cost_type": "gold",
         "equip_location": "gloves",
         "icon_path" : "boxing-glove.svg",
@@ -150,17 +150,32 @@
         ]
     },
     {
+        "name": "Baseball Glove",
+        "upgrade_id" : "baseball_glove",
+        "description": "25x chop yield",
+        "cost": 2e18,
+        "cost_type": "gold",
+        "equip_location": "gloves",
+        "icon_path" : "baseball-glove.svg",
+        "effects": [
+            {
+                "type": "chop_yield",
+                "value": 25
+            }
+        ]
+    },
+    {
         "name": "Brass Knucles",
         "upgrade_id" : "brass_knuckles",
-        "description": "25x chop yield",
-        "cost": 2e16,
+        "description": "50x chop yield",
+        "cost": 2e26,
         "cost_type": "gold",
         "equip_location": "gloves",
         "icon_path" : "brass-knuckles.svg",
         "effects": [
             {
                 "type": "chop_yield",
-                "value": 25
+                "value": 50
             }
         ]
     }

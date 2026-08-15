@@ -3,6 +3,10 @@ import { FileData } from "./files.js";
 import { EffectType, WoodType, ApplyType, EquipLocation, Effect, BlacksmithUpgradeData, LevelData } from "./data.js";
 import { formatString } from "./util.js";
 
+enum CalculateType {
+    Multiplier, // This is for stacking multipliers
+    Count,      // This adds all (worker_count, crit chance)
+}
 
 // This handles all of the upgrades that are trivially computed from the map of upgrades in GameData.
 // This can't handle more complex logic like specific active items since it is either on or off based on the presence of the upgrade
@@ -13,11 +17,14 @@ export const UpgradeCalculator = {
         this.effects.push(effect);
     },
 
-    calculate(effectType: EffectType, woodType: WoodType | null = null): number {
-        let totalValue = 1;
+    calculate(effectType: EffectType,calculateType: CalculateType = CalculateType.Multiplier, woodType: WoodType | null = null,): number {
+        let totalValue = calculateType == CalculateType.Multiplier ? 1 : 0;
         for (const effect of this.effects) {
             if (effect.type === effectType && (effect.wood_type === woodType || effect.wood_type === null)) {
-                totalValue *= effect.computeValue();
+                if(calculateType == CalculateType.Multiplier)
+                    totalValue *= effect.computeValue();
+                else 
+                    totalValue += effect.computeValue();
             }
         }
         return totalValue;
@@ -81,12 +88,12 @@ export const BlacksmithCalculator = {
         }
     },
 
-    calculate(effectType: EffectType, woodType: WoodType | null = null, equipLocation: EquipLocation | null = null ): number {
+    calculate(effectType: EffectType,calculateType: CalculateType = CalculateType.Multiplier, woodType: WoodType | null = null, equipLocation: EquipLocation | null = null ): number {
         let totalValue = 1;
         if(equipLocation === null) {
             const locations = Object.values(EquipLocation);
             for(const location of locations) {
-                totalValue *= this.calculate(effectType, woodType, location);
+                totalValue *= this.calculate(effectType, calculateType,woodType, location);
             }
             return totalValue;
         }
@@ -114,8 +121,8 @@ export const BlacksmithCalculator = {
 
 export const LevelCalculator = {
 
-    calculate(effectType: EffectType,woodType: WoodType | null = null): number {
-        var mult = 1;
+    calculate(effectType: EffectType,calculateType: CalculateType = CalculateType.Multiplier,woodType: WoodType | null = null): number {
+        var totalValue = calculateType == CalculateType.Multiplier ? 1 : 0;
         for(const indexType of Object.values(WoodType)) {
             const chopped = GameData.chop_count[indexType] || 0;
             if(!FileData.wood_levels[indexType]) {
@@ -131,7 +138,10 @@ export const LevelCalculator = {
                 }
                 for(const effect of levelData.effects) {
                     if(effect.match(effectType, woodType)) {
-                        mult *= effect.computeValueAt(1); // It never goes above 1
+                        if(calculateType == CalculateType.Multiplier)
+                            totalValue *= effect.computeValueAt(1);
+                        else 
+                            totalValue += effect.computeValueAt(1);
                     }
                 }
                 if(levelData.custom) {
@@ -140,19 +150,24 @@ export const LevelCalculator = {
 
             }
         }
-        return mult;
+        return totalValue;
         
     }
 
 }
 
 export function computeMultiplier(effectType: EffectType, woodType: WoodType | null = null): number {
-    var value = 1;
+    const upgradeMultiplier = UpgradeCalculator.calculate(effectType,CalculateType.Multiplier, woodType);
+    const blacksmithMultiplier = BlacksmithCalculator.calculate(effectType,CalculateType.Multiplier, woodType);
+    const levelMultiplier = LevelCalculator.calculate(effectType,CalculateType.Multiplier, woodType);
+    return upgradeMultiplier * blacksmithMultiplier * levelMultiplier;
+}
 
-    const upgradeMultiplier = UpgradeCalculator.calculate(effectType, woodType);
-    const blacksmithMultiplier = BlacksmithCalculator.calculate(effectType, woodType);
-    const levelMultiplier = LevelCalculator.calculate(effectType, woodType);
-    return value * upgradeMultiplier * blacksmithMultiplier * levelMultiplier;
+export function computeCount(effectType: EffectType, woodType:WoodType | null = null): number {
+    const upgradeCount = UpgradeCalculator.calculate(effectType,CalculateType.Count, woodType);
+    const blacksmithCount = BlacksmithCalculator.calculate(effectType,CalculateType.Count, woodType);
+    const levelCount = LevelCalculator.calculate(effectType,CalculateType.Count, woodType);
+    return upgradeCount + blacksmithCount + levelCount;
 }
 
 
