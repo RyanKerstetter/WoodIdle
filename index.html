@@ -18,11 +18,24 @@
             <h3>Wood Idle</h1>
         </div>
 
-        <div class="box" id="settings-box">
+        <div class="box" id="settings-box" role="button" tabindex="0" aria-label="Open settings">
             <h3>Settings</h3>
         </div>
 
-        
+        <div id="settings-modal" class="modal hidden" aria-hidden="true">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+                <div class="modal-header">
+                    <h3 id="settings-title">Settings</h3>
+                    <button id="close-settings" type="button" aria-label="Close settings">×</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="export-save-btn" type="button">Export Save</button>
+                    <button id="import-save-btn" type="button">Load Save</button>
+                    <input id="import-save-input" type="file" accept=".json,application/json" hidden>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="main-area">

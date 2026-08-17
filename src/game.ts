@@ -1,8 +1,8 @@
-import { GameData, loadGame, setupAutoSave } from "./game_data.js";
+import { GameData, loadGame, setupAutoSave, setupSettingsModal } from "./game_data.js";
 import { FileData, loadFiles } from "./files.js";
 import { render } from "./renderer.js";
 import { initializeMultipliers, computeMultiplier,computeCount } from "./multipliers.js";
-import { UpdateManager } from "./update_manager.js";
+import { Signal, SignalManager } from "./signal_manager.js";
 import { AreaData, EffectType, WoodType } from "./data.js";
 
 async function initializeGame() {
@@ -31,9 +31,13 @@ export function applyDamage(wood: WoodType, damage: number) {
         GameData.gold_this_run += totalSell;
         GameData.chop_count[wood] =
             (GameData.chop_count[wood] || 0) + amountChopped;
+        SignalManager.triggerSignal(Signal.MoneyGained);
+        SignalManager.triggerSignal(Signal.TreeChopped);
+        
     }
     const nextProgress = progress - completedChops * totalHealth;
         GameData.chop_progress[wood] = nextProgress;
+    SignalManager.triggerSignal(Signal.TreeDamage);
 }
 
 function handleTick(deltaTime: number) {
@@ -48,6 +52,7 @@ function handleTick(deltaTime: number) {
         const totalDamage = damageMultiplier * ticks * workerCount;
 
         applyDamage(wood,totalDamage);
+        SignalManager.triggerSignal(Signal.Tick);
     });
 }
 
@@ -56,11 +61,12 @@ async function startGame() {
     await initializeGame();
     console.log("FileData", FileData);
     setupAutoSave();
+    setupSettingsModal();
 
     let lastTime = performance.now();
     let accumulator = 0;
     const TICK_RATE = 1; 
-    UpdateManager.triggerAllUpdates();
+    SignalManager.triggerAllSignals();
 
     function gameLoop(currentTime: number) {
         // 1. Calculate time passed since last frame
@@ -70,7 +76,6 @@ async function startGame() {
         while (accumulator >= TICK_RATE) {
             const tick = accumulator > 1000 ? accumulator / 100 : TICK_RATE;
             handleTick(tick);
-            UpdateManager.triggerUpdates("tick"); // This handles all of the UI Updates
             accumulator -= tick;
         }
         requestAnimationFrame(gameLoop);

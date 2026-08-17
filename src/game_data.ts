@@ -1,4 +1,5 @@
 import type {WoodType, AreaType } from "./data.js";
+import { Signal, SignalManager } from "./signal_manager.js";
 
 export const GameData = {
     gold: 0 as number,
@@ -8,6 +9,15 @@ export const GameData = {
     selected_area: "Forest" as AreaType,
     chop_progress: {} as Record<WoodType,number>,
     chop_count : {} as Record<WoodType,number>,
+}
+
+export function getUpgrade(upgradeId: string): number {
+    return GameData.upgrades[upgradeId] || 0;
+}
+
+export function setUpgrade(upgradeId: string, level: number) {
+    GameData.upgrades[upgradeId] = level;
+    SignalManager.triggerSignal(Signal.UpgradeUnlocked);
 }
 
 function resetGameData() {
@@ -28,18 +38,75 @@ export function loadGame() {
     const savedData = localStorage.getItem('chopGameData');
     if (savedData) {
         const parsed = JSON.parse(savedData);
-        
-        // Mutate the static GameData object properties directly
+
         GameData.gold = parsed.gold ?? 0;
-        GameData.prestige_tokens = parsed.prestigeTokens ?? 0;
+        GameData.prestige_tokens = parsed.prestige_tokens ?? parsed.prestigeTokens ?? 0;
         GameData.gold_this_run = parsed.gold_this_run ?? 0;
         GameData.upgrades = parsed.upgrades ?? {};
         GameData.selected_area = parsed.selected_area ?? "Forest";
         GameData.chop_progress = parsed.chop_progress ?? {};
         GameData.chop_count = parsed.chop_count ?? {};
     }
-    
-    //GameData.upgrades[`axe_unlocked`] = 1;
+}
+
+export function setupSettingsModal() {
+    const settingsBox = document.getElementById('settings-box');
+    const modal = document.getElementById('settings-modal');
+    const closeButton = document.getElementById('close-settings');
+    const exportButton = document.getElementById('export-save-btn');
+    const importButton = document.getElementById('import-save-btn');
+    const fileInput = document.getElementById('import-save-input') as HTMLInputElement | null;
+
+    if (!settingsBox || !modal || !closeButton || !exportButton || !importButton || !fileInput) {
+        return;
+    }
+
+    const closeModal = () => {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        fileInput.value = '';
+    };
+
+    const openModal = () => {
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+    };
+
+    settingsBox.addEventListener('click', openModal);
+    settingsBox.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openModal();
+        }
+    });
+    closeButton.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+    exportButton.addEventListener('click', () => {
+        exportSave();
+        closeModal();
+    });
+    importButton.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async (event) => {
+        const target = event.target as HTMLInputElement;
+        const file = target.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        try {
+            await importSave(file);
+            closeModal();
+        } catch (error) {
+            console.error('Failed to import save:', error);
+            alert('Failed to import save. Please select a valid Chop save JSON file.');
+        } finally {
+            target.value = '';
+        }
+    });
 }
 
 export function setupAutoSave() {
@@ -96,9 +163,7 @@ export async function importSave(jsonOrFile: string | File, reload = true) {
 
     try {
         const parsed = JSON.parse(dataStr);
-        // Store the imported object directly into localStorage
         localStorage.setItem('chopGameData', JSON.stringify(parsed));
-        // Update the in-memory GameData immediately
         loadGame();
         if (reload) location.reload();
     } catch (err) {

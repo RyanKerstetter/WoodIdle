@@ -2,22 +2,22 @@
     {
         "level": 1,
         "required_chops": 1e1,
-        "description": "2x Sell Price",
+        "description": "1.5x Sell Price",
         "effects": [
             {
                 "type": "sell_price",
-                "value": 2
+                "value": 1.5
             }
         ]
     },
     {
         "level": 2,
         "required_chops": 1e2,
-        "description": "2x Chop Yield",
+        "description": "1.5x Chop Yield",
         "effects": [
             {
                 "type": "chop_yield",
-                "value": 2
+                "value": 1.5
             }
         ]
     },{

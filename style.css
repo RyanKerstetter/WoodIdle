@@ -65,8 +65,84 @@ html, body {
     height: auto;
     align-self: center;
     cursor: pointer;
+    user-select: none;
 }
 #settings-box h3 { margin: 0; font-size: 1rem; }
+#settings-box:focus-visible {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 16, 12, 0.7);
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    width: min(420px, calc(100vw - 32px));
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    padding: 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    color: var(--text-primary);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+#close-settings {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-actions button {
+    background-color: var(--bg-upgrade);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.modal-actions button:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
 
 
 #title-box {

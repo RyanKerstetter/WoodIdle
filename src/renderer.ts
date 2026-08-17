@@ -1,6 +1,6 @@
-import { GameData } from "./game_data.js";
-import { FileData, findShrineNode,} from "./files.js";
-import { UpdateManager } from "./update_manager.js";
+import { GameData, getUpgrade } from "./game_data.js";
+import { FileData, findShrineNode } from "./files.js";
+import { Signal, SignalManager } from "./signal_manager.js";
 import { computeMultiplier } from "./multipliers.js";
 import {
     ShrineNode,
@@ -93,7 +93,7 @@ function render_blacksmith_upgrade(
     const costButton =
         upgradeElement.querySelector<HTMLButtonElement>(".upgrade-cost");
 
-    UpdateManager.registerUpdate("tick", () => {
+    SignalManager.registerSignal(Signal.UpgradeBought, () => {
         if (!costButton) return;
 
         const upgradeId = upgrade.upgrade_id;
@@ -134,7 +134,7 @@ function render_blacksmith_upgrade(
             GameData.gold -= upgrade.cost;
             GameData.upgrades[upgradeId] = 1;
         }
-        UpdateManager.triggerAllUpdates();
+        SignalManager.triggerSignal(Signal.UpgradeBought);
     };
 
     return upgradeElement;
@@ -166,7 +166,7 @@ export function render_level_upgrade(
     ) as HTMLElement;
 
     // Real-time update for unlocked state
-    UpdateManager.registerUpdate("tick", () => {
+    SignalManager.registerSignalArray([Signal.AreaChanged, Signal.TreeChopped], () => {
         const currentChops = GameData.chop_count[wood] || 0;
         const isUnlocked = currentChops >= level.required_chops;
 
@@ -220,7 +220,7 @@ function render_area_upgrade(
     const levelElement = upgradeElement.querySelector(".upgrade-count");
     if (!costButton || !effectElement || !levelElement) return upgradeElement;
 
-    UpdateManager.registerUpdate("tick", () => {
+    SignalManager.registerSignalArray([Signal.UpgradeBought,Signal.MoneyGained], () => {
         const upgradeInstance = upgrade.getUpgrade(area);
         const cost = upgradeInstance.getCost();
         const canAfford = upgradeInstance.canAfford();
@@ -246,7 +246,7 @@ function render_area_upgrade(
         costButton.textContent = `${formatNumber(cost)} Gold`;
         levelElement.textContent = `${new_level}`;
         effectElement.textContent = `${formatNumber(new_value)}x > ${formatNumber(new_next_value)}x`;
-        UpdateManager.triggerAllUpdates();
+        SignalManager.triggerSignal(Signal.UpgradeBought);
     };
     return upgradeElement;
 }
@@ -274,7 +274,7 @@ function render_blacksmith() {
             blacksmith?.appendChild(title);
             last_equipment = upgradeData.equip_location;
             // This checks if the equip location is unlocked and changes it from hidden if it is.
-            UpdateManager.registerUpdate("tick", () => {
+            SignalManager.registerSignal(Signal.UpgradeUnlocked, () => {
                 const isUnlocked: boolean = !!GameData.upgrades[key];
                 title.classList.toggle("hidden", !isUnlocked);
             });
@@ -286,11 +286,10 @@ function render_blacksmith() {
 
         const currentPrevious = previousUpgrade;
 
-        UpdateManager.registerUpdate("tick", () => {
-            const isLocationUnlocked: boolean = !!GameData.upgrades[key];
+        SignalManager.registerSignal(Signal.UpgradeUnlocked, () => {
+            const isLocationUnlocked: boolean = getUpgrade(key) > 0;
             const isPreviousUnlocked: boolean =
-                currentPrevious == null ||
-                !!GameData.upgrades[currentPrevious.upgrade_id];
+                currentPrevious == null || getUpgrade(currentPrevious.upgrade_id) > 0;
 
             upgradeElement.classList.toggle(
                 "hidden",
@@ -306,7 +305,21 @@ const shrine_camera_pos = {
     x: 0 as number,
     y: 0 as number,
 };
-let shrine_zoom = 1/5;
+let shrine_zoom = 1;
+
+function toWorld(screenX: number, screenY: number) {
+    return {
+        x: (screenX - shrine_camera_pos.x) / shrine_zoom,
+        y: (screenY - shrine_camera_pos.y) / shrine_zoom,
+    };
+}
+
+function toScreen(worldX: number, worldY: number) {
+    return {
+        x: worldX * shrine_zoom + shrine_camera_pos.x,
+        y: worldY * shrine_zoom + shrine_camera_pos.y,
+    };
+}
 
 function render_shrine() {
     const shrine = document.querySelector("#shrine");
@@ -320,7 +333,7 @@ function render_shrine() {
                 <p>Total Earnings: 1</p>
                 <p>Prestige Tokens: 1</p>
             </div>
-            <button class="upgrade-count">Prestige</button>
+            <button class="upgrade-count" style="margin-left: auto; width:30%">Prestige</button>
         </div>
     `;
     shrine?.appendChild(shrine_top_section);
@@ -335,19 +348,19 @@ function render_shrine() {
         const h =
             rect.height ||
             shrine.clientHeight - shrine_top_section.clientHeight ||
-            600;
+            800;
         shrine_canvas.width = w;
         shrine_canvas.height = Math.max(h, 800);
     };
 
     resizeCanvas();
+    SignalManager.registerSignal(Signal.AreaChanged,resizeCanvas);
     window.addEventListener("resize", resizeCanvas);
 
     const ctx = shrine_canvas.getContext("2d");
     let isDragging = false;
 
     const iconCache = new Map<string, HTMLImageElement>();
-
     FileData.shrine_nodes.forEach((node: ShrineNode) => {
         if (node.icon && !iconCache.has(node.icon)) {
             const img = new Image();
@@ -358,35 +371,37 @@ function render_shrine() {
 
     function draw() {
         if (!ctx) return;
-        ctx.fillStyle = "#181818";
+        ctx.fillStyle = "#202020";
         ctx.clearRect(0, 0, shrine_canvas.width, shrine_canvas.height);
         ctx.save();
-        ctx.translate(shrine_camera_pos.x, shrine_camera_pos.y);
-        ctx.scale(shrine_zoom, shrine_zoom);
-        FileData.shrine_connections.forEach((connection:ShrineConnection) => {
-            const from:ShrineNode | undefined = findShrineNode(connection.from_node_id);
-            const to  : ShrineNode | undefined = findShrineNode(connection.to_node_id);
-            if(!from || !to) return;
+        FileData.shrine_connections.forEach((connection: ShrineConnection) => {
+            const from: ShrineNode | undefined = findShrineNode(
+                connection.from_node_id,
+            );
+            const to: ShrineNode | undefined = findShrineNode(
+                connection.to_node_id,
+            );
+            if (!from || !to) return;
             ctx.beginPath();
-            ctx.moveTo(from?.position.x + 45,from?.position.y+45);
-            ctx.lineTo(to?.position.x + 45, to?.position.y + 45);
+            const fromPos = toScreen(from.position.x + 45, from.position.y + 45);
+            const toPos = toScreen(to.position.x + 45, to.position.y + 45);
+            ctx.moveTo(fromPos.x, fromPos.y);
+            ctx.lineTo(toPos.x, toPos.y);
             ctx.strokeStyle = "#4e9f3d"; // Line color
-            ctx.lineWidth = 4;           // Line thickness in pixels
+            ctx.lineWidth = 4; // Line thickness in pixels
             ctx.lineCap = "round";
             ctx.stroke();
         });
         FileData.shrine_nodes.forEach((node: ShrineNode) => {
-            ctx.fillRect(node.position.x, node.position.y, 90, 90);
-            if (node.icon) {
-                const img = iconCache.get(node.icon);
-                // Ensure image exists and finish loading before drawing
-                if (img && img.complete && img.naturalWidth !== 0) {
-                    // Offset by 10px padding, rendered at 70x70 inside the 90x90 box
-                    ctx.drawImage(img, node.position.x + 10, node.position.y + 10, 70, 70);
-                }
-            }
+            const screenPos = toScreen(node.position.x+5, node.position.y+5);
+            const screenBounds = toScreen(node.position.x + 95, node.position.y + 95);
+
+            ctx.fillRect(screenPos.x, screenPos.y, screenBounds.x - screenPos.x, screenBounds.y - screenPos.y);
+            const img = iconCache.get(node.icon);
+            if (!img) return;
+            ctx.drawImage(img, screenPos.x+10, screenPos.y+10, screenBounds.x - screenPos.x - 20, screenBounds.y - screenPos.y - 20);
         });
-        
+
         ctx.restore();
         requestAnimationFrame(draw);
     }
@@ -396,43 +411,77 @@ function render_shrine() {
     let startY = 0;
 
     shrine_canvas.addEventListener("pointerdown", (e) => {
-        isDragging = true;
-        startX = e.clientX - shrine_camera_pos.x;
-        startY = e.clientY - shrine_camera_pos.y;
+        const rect = shrine_canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        const world = toWorld(screenX, screenY);
+        console.log(`Screen: (${screenX}, ${screenY}) -> World: (${world.x}, ${world.y})`);
+        console.log(`Shrine Camera Position: (${shrine_camera_pos.x}, ${shrine_camera_pos.y}), Zoom: ${shrine_zoom}`);
+        const clickedNode = FileData.shrine_nodes.find((node: ShrineNode) => {
+            return (
+                world.x >= node.position.x + 5 &&
+                world.x <= node.position.x + 95 &&
+                world.y >= node.position.y + 5 &&
+                world.y <= node.position.y + 95
+            );
+        });
 
+        if (clickedNode) {
+            console.log(`Clicked on shrine node: ${clickedNode.name}`);
+            shrine_canvas.style.cursor = "pointer";
+            return;
+        }
+
+        isDragging = true;
+        startX = screenX;
+        startY = screenY;
         shrine_canvas.style.cursor = "grabbing";
         shrine_canvas.setPointerCapture(e.pointerId);
     });
 
     shrine_canvas.addEventListener("pointermove", (e) => {
+        const rect = shrine_canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        const world = toWorld(screenX, screenY);
+        const clickedNode = FileData.shrine_nodes.find((node: ShrineNode) => {
+            return (
+                world.x >= node.position.x + 5 &&
+                world.x <= node.position.x + 95 &&
+                world.y >= node.position.y + 5 &&
+                world.y <= node.position.y + 95
+            );
+        });
+
+        if (clickedNode) {
+            shrine_canvas.style.cursor = "pointer";
+        } else {
+            shrine_canvas.style.cursor = "grabbing";
+        }
         if (!isDragging) return;
 
-        shrine_camera_pos.x = e.clientX - startX;
-        shrine_camera_pos.y = e.clientY - startY;
+        
+
+        shrine_camera_pos.x += screenX - startX;
+        shrine_camera_pos.y += screenY - startY;
+        startX = screenX;
+        startY = screenY;
     });
 
     // Scroll Wheel Zoom Listener
-    shrine_canvas.addEventListener(
-        "wheel",
-        (e: WheelEvent) => {
+    shrine_canvas.addEventListener("wheel",(e: WheelEvent) => {
             e.preventDefault();
 
-            // 1. Get mouse position relative to canvas top-left corner
             const rect = shrine_canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-
-            // 2. Set zoom factor (Scroll UP = zoom in > 1, Scroll DOWN = zoom out < 1)
+            const worldBeforeZoom = toWorld(mouseX, mouseY);
             const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+            const nextZoom = shrine_zoom * zoomFactor;
 
-            // 3. Pivot camera offset around the mouse position
-            shrine_camera_pos.x =
-                mouseX - (mouseX - shrine_camera_pos.x) * zoomFactor;
-            shrine_camera_pos.y =
-                mouseY - (mouseY - shrine_camera_pos.y) * zoomFactor;
-
-            // 4. Update global zoom level
-            shrine_zoom *= zoomFactor;
+            shrine_zoom = nextZoom;
+            shrine_camera_pos.x = mouseX - worldBeforeZoom.x * shrine_zoom;
+            shrine_camera_pos.y = mouseY - worldBeforeZoom.y * shrine_zoom;
         },
         { passive: false },
     );
@@ -453,17 +502,17 @@ function render_shrine() {
 }
 
 function render_area_selector() {
-    var areaSelector: HTMLElement | null =
+    var area_selector: HTMLElement | null =
         document.getElementById("area_selector");
-    if (!areaSelector) return;
-    areaSelector.innerHTML = "";
+    if (!area_selector) return;
+    area_selector.innerHTML = "";
 
     FileData.areas.forEach((area: AreaData) => {
-        const areaElement = document.createElement("div");
-        areaElement.classList.add("area-option");
-        areaElement.textContent = area.name;
+        const area_element = document.createElement("div");
+        area_element.classList.add("area-option");
+        area_element.textContent = area.name;
 
-        areaSelector?.appendChild(areaElement);
+        area_selector?.appendChild(area_element);
         var requirement: Requirement | undefined = undefined;
         if (area.name != "Forest") {
             requirement = new Requirement(
@@ -472,7 +521,7 @@ function render_area_selector() {
             );
         }
 
-        areaElement.onclick = () => {
+        area_element.onclick = () => {
             if (requirement && !requirement.isMet()) return; // Not unlocked yet
             console.log(`Setting to ${area.name}`);
             GameData.selected_area = area.name as AreaType;
@@ -485,7 +534,7 @@ function render_area_selector() {
                 console.log(element);
                 element?.classList.toggle("hidden", building != sidebar);
             });
-            UpdateManager.triggerUpdates("tick");
+            SignalManager.triggerSignal(Signal.AreaChanged);
         };
     });
 }
@@ -499,15 +548,15 @@ function render_levels() {
         const wood: WoodType = area.wood.name as WoodType;
         levelContainer.id = `${wood}-levels`;
         levelList.appendChild(levelContainer);
-        const levelData: LevelData[] = FileData.wood_levels[wood] || [];
-        levelData.forEach((l: LevelData) => {
+        const level_data: LevelData[] = FileData.wood_levels[wood] || [];
+        level_data.forEach((l: LevelData) => {
             const levelCard = render_level_upgrade(
                 l,
                 area.wood.name as WoodType,
             );
             levelContainer.appendChild(levelCard);
         });
-        UpdateManager.registerUpdate("tick", () => {
+        SignalManager.registerSignal(Signal.AreaChanged, () => {
             levelContainer.classList.toggle(
                 "hidden",
                 GameData.selected_area != area.name,
@@ -556,7 +605,7 @@ function render_area_upgrades() {
         areaUpgradeContainer.appendChild(render4);
         areaUpgradeContainer.appendChild(render5);
 
-        UpdateManager.registerUpdate("tick", () => {
+        SignalManager.registerSignal(Signal.AreaChanged, () => {
             areaUpgradeContainer.classList.toggle(
                 "hidden",
                 GameData.selected_area != area.name,
@@ -566,12 +615,11 @@ function render_area_upgrades() {
 }
 
 function canvas_on_click(x: number, y: number) {
-    const currentArea = GameData.selected_area;
-    const wood = FileData.area_to_wood[currentArea];
+    const current_area = GameData.selected_area;
+    const wood = FileData.area_to_wood[current_area];
     const damage = computeMultiplier(EffectType.ChopDamage, wood);
 
     applyDamage(wood, damage);
-    UpdateManager.triggerAllUpdates();
 }
 
 function render_main() {
@@ -593,7 +641,7 @@ function render_main() {
             canvas_on_click(event.x, event.y);
         });
     }
-    UpdateManager.registerUpdate("tick", () => {
+    SignalManager.registerSignal(Signal.MoneyGained, () => {
         if (!goldElement || !prestigeTokenElement) return;
         goldElement.innerText = `${formatNumber(GameData.gold)}`;
         prestigeTokenElement.innerText = `${formatNumber(GameData.prestige_tokens)}`;
@@ -634,7 +682,7 @@ function render_main() {
         return;
     }
 
-    UpdateManager.registerUpdate("tick", () => {
+    SignalManager.registerSignalArray([Signal.AreaChanged, Signal.TreeDamage, Signal.UpgradeBought], () => {
         const currentArea = GameData.selected_area;
         FileData.areas.forEach((value: AreaData) => {
             if (value.name != currentArea) return;
@@ -695,5 +743,5 @@ export async function render() {
     render_blacksmith();
     render_main();
     render_shrine();
-    UpdateManager.triggerUpdates("tick");
+    SignalManager.triggerAllSignals();
 }
