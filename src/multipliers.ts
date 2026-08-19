@@ -89,7 +89,7 @@ export const BlacksmithCalculator = {
     },
 
     calculate(effectType: EffectType,calculateType: CalculateType = CalculateType.Multiplier, woodType: WoodType | null = null, equipLocation: EquipLocation | null = null ): number {
-        let totalValue = 1;
+        let totalValue = calculateType == CalculateType.Multiplier ? 1 : 0;
         if(equipLocation === null) {
             const locations = Object.values(EquipLocation);
             for(const location of locations) {

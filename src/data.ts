@@ -1,5 +1,5 @@
 import { FileData } from "./files.js";
-import { GameData } from "./game_data.js";
+import { GameData, setUpgrade, getUpgrade } from "./game_data.js";
 import { BlacksmithCalculator, UpgradeCalculator } from "./multipliers.js";
 import { formatString } from "./util.js";
 
@@ -116,7 +116,7 @@ export class Effect {
     }
 
     getLevel() : number {
-        const upgradeLevel = GameData.upgrades[this.upgrade_id] || 0;
+        const upgradeLevel = getUpgrade(this.upgrade_id);
         return upgradeLevel;
     }
 }
@@ -144,7 +144,7 @@ export class Requirement {
     }
 
     isMet(): boolean {
-        return (GameData.upgrades[this.id] || 0) >= this.amount;
+        return (getUpgrade(this.id)) >= this.amount;
     }
 }
 
@@ -156,7 +156,7 @@ export class Upgrade {
     }
 
     apply(): boolean {
-        GameData.upgrades[this.id] = (GameData.upgrades[this.id] || 0) + 1;
+        setUpgrade(this.id,getUpgrade(this.id) + 1);
         return true;
     }
 }
@@ -209,7 +209,7 @@ export class CompoundingUpgrade extends Upgrade {
     }
 
     getCost(): number {
-        const level = GameData.upgrades[this.id] || 0;
+        const level = getUpgrade(this.id);
         //console.log(this);
         return this.baseCost * (this.multiplier ** level);
     }
@@ -327,7 +327,7 @@ export class Custom { // This is used to set values from a json config
     }
 
     apply() {
-        GameData.upgrades[this.id] = this.value;
+        setUpgrade(this.id,this.value);
     }
 }
 
@@ -425,7 +425,7 @@ export class IndividualAreaUpgradeData {
         };
         const upgradeId = formatString(this.upgrade_id, replacementContext);
         console.log(this.upgrade_id,upgradeId,replacementContext);
-        const level = GameData.upgrades[upgradeId] || 0;
+        const level = getUpgrade(upgradeId);
         return this.getBaseCost(area) * (this.cost_multiplier ** level);
     }
 

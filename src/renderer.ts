@@ -1,4 +1,4 @@
-import { GameData, getUpgrade } from "./game_data.js";
+import { GameData, getUpgrade, setUpgrade } from "./game_data.js";
 import { FileData, findShrineNode } from "./files.js";
 import { Signal, SignalManager } from "./signal_manager.js";
 import { computeMultiplier } from "./multipliers.js";
@@ -97,7 +97,7 @@ function render_blacksmith_upgrade(
         if (!costButton) return;
 
         const upgradeId = upgrade.upgrade_id;
-        const isPurchased = (GameData.upgrades[upgradeId] || 0) > 0;
+        const isPurchased = getUpgrade(upgrade.upgrade_id) > 0;
 
         // Handle Purchased State
         if (isPurchased) {
@@ -124,7 +124,7 @@ function render_blacksmith_upgrade(
 
     upgradeElement.onclick = () => {
         const upgradeId = upgrade.upgrade_id;
-        if (GameData.upgrades[upgradeId]) return; // Already purchased
+        if (getUpgrade(upgradeId)) return; // Already purchased
 
         if (upgrade.cost_upgrade) {
             if (upgrade.cost_upgrade.canAfford()) {
@@ -132,7 +132,7 @@ function render_blacksmith_upgrade(
             }
         } else if (GameData.gold >= upgrade.cost) {
             GameData.gold -= upgrade.cost;
-            GameData.upgrades[upgradeId] = 1;
+            setUpgrade(upgradeId,1);
         }
         SignalManager.triggerSignal(Signal.UpgradeBought);
     };
@@ -275,7 +275,7 @@ function render_blacksmith() {
             last_equipment = upgradeData.equip_location;
             // This checks if the equip location is unlocked and changes it from hidden if it is.
             SignalManager.registerSignal(Signal.UpgradeUnlocked, () => {
-                const isUnlocked: boolean = !!GameData.upgrades[key];
+                const isUnlocked: boolean = getUpgrade(key) != 0;
                 title.classList.toggle("hidden", !isUnlocked);
             });
             previousUpgrade = null;
@@ -351,6 +351,7 @@ function render_shrine() {
             800;
         shrine_canvas.width = w;
         shrine_canvas.height = Math.max(h, 800);
+        requestAnimationFrame(draw);
     };
 
     resizeCanvas();
@@ -393,17 +394,19 @@ function render_shrine() {
             ctx.stroke();
         });
         FileData.shrine_nodes.forEach((node: ShrineNode) => {
-            const screenPos = toScreen(node.position.x+5, node.position.y+5);
-            const screenBounds = toScreen(node.position.x + 95, node.position.y + 95);
+            const screenPos = toScreen(node.position.x+10, node.position.y+10);
+            const screenBounds = toScreen(node.position.x + 90, node.position.y + 90);
+            const wh = { x: screenBounds.x - screenPos.x, y: screenBounds.y - screenPos.y};
 
-            ctx.fillRect(screenPos.x, screenPos.y, screenBounds.x - screenPos.x, screenBounds.y - screenPos.y);
+            ctx.fillRect(screenPos.x, screenPos.y,wh.x,wh.y);
             const img = iconCache.get(node.icon);
             if (!img) return;
-            ctx.drawImage(img, screenPos.x+10, screenPos.y+10, screenBounds.x - screenPos.x - 20, screenBounds.y - screenPos.y - 20);
+            const iconSize = .8;
+            const iconOffset = (1 - iconSize) / 2
+            ctx.drawImage(img, screenPos.x + wh.x * iconOffset, screenPos.y + wh.y * iconOffset, wh.x * iconSize,wh.y * iconSize);
         });
 
         ctx.restore();
-        requestAnimationFrame(draw);
     }
 
     // Dragging / Pan Listener
@@ -466,6 +469,7 @@ function render_shrine() {
         shrine_camera_pos.y += screenY - startY;
         startX = screenX;
         startY = screenY;
+        requestAnimationFrame(draw);
     });
 
     // Scroll Wheel Zoom Listener
@@ -482,6 +486,7 @@ function render_shrine() {
             shrine_zoom = nextZoom;
             shrine_camera_pos.x = mouseX - worldBeforeZoom.x * shrine_zoom;
             shrine_camera_pos.y = mouseY - worldBeforeZoom.y * shrine_zoom;
+            requestAnimationFrame(draw);
         },
         { passive: false },
     );
@@ -497,7 +502,6 @@ function render_shrine() {
     shrine_canvas.addEventListener("pointerup", stopDrag);
     shrine_canvas.addEventListener("pointercancel", stopDrag);
 
-    // 4. Start the loop
     requestAnimationFrame(draw);
 }
 
