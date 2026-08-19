@@ -303,19 +303,70 @@ html, body {
 }
 
 #shrine {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
-#shrine-canvas{
+#shrine-canvas {
     flex: 1;
-    min-height: 600px; /* <--- Prevents vertical collapse */
+    max-height: 70%;
     touch-action: none; /* Prevents mobile page scrolling during drag/pan */
     display: block;
     object-fit: contain;
     background-color: #0b0f0c;
     border-radius: var(--radius-base);
     border: 1px solid var(--border-color);
+}
+
+.shrine-top-section {
+    flex-shrink: 0;
+}
+
+.shrine-summary {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin: -8px 0 12px;
+}
+
+.shrine-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1;
+    gap: 8px;
+}
+
+.shrine-stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    padding: 6px 10px;
+    background-color: var(--bg-upgrade);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+}
+
+.shrine-stat-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.shrine-stat strong {
+    color: var(--accent-green);
+    font-family: monospace;
+    font-size: 1.05rem;
+}
+
+.shrine-prestige {
+    width: 28%;
+    min-width: 82px;
+    cursor: pointer;
 }
 
 

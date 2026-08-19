@@ -1,4 +1,4 @@
-import { GameData, getUpgrade, setUpgrade } from "./game_data.js";
+import { computePrestigeTokens, getChopCount, getChopProgress, getGold, getGoldThisRun, getPrestigeTokens, getSelectedArea, getUpgrade, setChopProgress, setSelectedArea, incrementGold, setUpgrade } from "./game_data.js";
 import { FileData, findShrineNode } from "./files.js";
 import { Signal, SignalManager } from "./signal_manager.js";
 import { computeMultiplier } from "./multipliers.js";
@@ -17,7 +17,7 @@ import {
     formatCostType,
 } from "./data.js";
 import { formatString } from "./util.js";
-import { applyDamage } from "./game.js";
+import { applyDamage, prestige } from "./game.js";
 
 export function iconHtml(
     name: string,
@@ -93,7 +93,7 @@ function render_blacksmith_upgrade(
     const costButton =
         upgradeElement.querySelector<HTMLButtonElement>(".upgrade-cost");
 
-    SignalManager.registerSignal(Signal.UpgradeBought, () => {
+    SignalManager.registerSignal(Signal.UpgradeUnlocked, () => {
         if (!costButton) return;
 
         const upgradeId = upgrade.upgrade_id;
@@ -111,7 +111,7 @@ function render_blacksmith_upgrade(
         // Handle Affordability State
         const canAfford = upgrade.cost_upgrade
             ? upgrade.cost_upgrade.canAfford()
-            : GameData.gold >= upgrade.cost;
+            : getGold() >= upgrade.cost;
 
         const currentCost = upgrade.cost;
         const currentCostType = upgrade.cost_type;
@@ -130,11 +130,11 @@ function render_blacksmith_upgrade(
             if (upgrade.cost_upgrade.canAfford()) {
                 upgrade.cost_upgrade.apply();
             }
-        } else if (GameData.gold >= upgrade.cost) {
-            GameData.gold -= upgrade.cost;
+        } else if (getGold() >= upgrade.cost) {
+            incrementGold(-upgrade.cost);
             setUpgrade(upgradeId,1);
         }
-        SignalManager.triggerSignal(Signal.UpgradeBought);
+        SignalManager.triggerSignal(Signal.UpgradeUnlocked);
     };
 
     return upgradeElement;
@@ -167,7 +167,7 @@ export function render_level_upgrade(
 
     // Real-time update for unlocked state
     SignalManager.registerSignalArray([Signal.AreaChanged, Signal.TreeChopped], () => {
-        const currentChops = GameData.chop_count[wood] || 0;
+        const currentChops = getChopCount(wood);
         const isUnlocked = currentChops >= level.required_chops;
 
         if (statusText) {
@@ -220,7 +220,7 @@ function render_area_upgrade(
     const levelElement = upgradeElement.querySelector(".upgrade-count");
     if (!costButton || !effectElement || !levelElement) return upgradeElement;
 
-    SignalManager.registerSignalArray([Signal.UpgradeBought,Signal.MoneyGained], () => {
+    SignalManager.registerSignalArray([Signal.UpgradeUnlocked,Signal.MoneyGained], () => {
         const upgradeInstance = upgrade.getUpgrade(area);
         const cost = upgradeInstance.getCost();
         const canAfford = upgradeInstance.canAfford();
@@ -246,7 +246,7 @@ function render_area_upgrade(
         costButton.textContent = `${formatNumber(cost)} Gold`;
         levelElement.textContent = `${new_level}`;
         effectElement.textContent = `${formatNumber(new_value)}x > ${formatNumber(new_next_value)}x`;
-        SignalManager.triggerSignal(Signal.UpgradeBought);
+        SignalManager.triggerSignal(Signal.UpgradeUnlocked);
     };
     return upgradeElement;
 }
@@ -254,11 +254,6 @@ function render_area_upgrade(
 function render_blacksmith() {
     var blacksmith = document.getElementById("blacksmith");
     if (!blacksmith) return;
-
-    var blacksmithTitle = document.createElement("h2");
-    blacksmithTitle.classList.add("blacksmith-title");
-    blacksmithTitle.innerText = "Blacksmith";
-    blacksmith.appendChild(blacksmithTitle);
 
     var last_equipment = "None";
     var previousUpgrade: BlacksmithUpgradeData | null = null;
@@ -325,18 +320,20 @@ function render_shrine() {
     const shrine = document.querySelector("#shrine");
     if (!shrine) return;
 
-    const shrine_top_section = document.createElement("div");
-    shrine_top_section.innerHTML = `
-        <h2>Shrine</h2>
-        <div style="display: flex;flex-direction: row;">
-            <div style="display: flex;flex-direction: column;">
-                <p>Total Earnings: 1</p>
-                <p>Prestige Tokens: 1</p>
-            </div>
-            <button class="upgrade-count" style="margin-left: auto; width:30%">Prestige</button>
-        </div>
-    `;
-    shrine?.appendChild(shrine_top_section);
+    const shrineTopSection = shrine.querySelector(".shrine-top-section");
+    const shrineEarnings = shrine.querySelector("#shrine-earnings") as HTMLElement;
+    const shrinePrestige = shrine.querySelector("#shrine-prestige") as HTMLElement;
+    const prestigeButton = shrine.querySelector("#prestige-button") as HTMLButtonElement;
+
+    prestigeButton.onclick = () => {
+        prestige();
+    }
+
+    SignalManager.registerSignal(Signal.MoneyGained,() => {
+        if (!shrineEarnings || !shrinePrestige) return;
+        shrineEarnings.innerText = `${formatNumber(getGoldThisRun())}`;
+        shrinePrestige.innerText = `${formatNumber(computePrestigeTokens())}`;
+    })
 
     const shrine_canvas = document.createElement("canvas") as HTMLCanvasElement;
 
@@ -347,10 +344,9 @@ function render_shrine() {
         const w = rect.width || shrine.clientWidth || 800;
         const h =
             rect.height ||
-            shrine.clientHeight - shrine_top_section.clientHeight ||
-            800;
+            Math.max(shrine.clientHeight - (shrineTopSection?.clientHeight || 0), 360);
         shrine_canvas.width = w;
-        shrine_canvas.height = Math.max(h, 800);
+        shrine_canvas.height = h;
         requestAnimationFrame(draw);
     };
 
@@ -525,20 +521,22 @@ function render_area_selector() {
             );
         }
 
-        area_element.onclick = () => {
-            if (requirement && !requirement.isMet()) return; // Not unlocked yet
-            console.log(`Setting to ${area.name}`);
-            GameData.selected_area = area.name as AreaType;
-            const sidebar = area.building;
+        SignalManager.registerSignal(Signal.AreaChanged, () => {
+            const sidebar = FileData.area_to_data[getSelectedArea()].building;
             FileData.areas.forEach((area: AreaData) => {
                 const building = area.building;
                 const element = document.querySelector(
                     `#${building.toLowerCase()}`,
                 );
-                console.log(element);
+                console.log(building,element,sidebar);
                 element?.classList.toggle("hidden", building != sidebar);
             });
-            SignalManager.triggerSignal(Signal.AreaChanged);
+        });
+
+        area_element.onclick = () => {
+            if (requirement && !requirement.isMet()) return; // Not unlocked yet
+            console.log(`Setting to ${area.name}`);
+            setSelectedArea(area.name as AreaType);
         };
     });
 }
@@ -563,7 +561,7 @@ function render_levels() {
         SignalManager.registerSignal(Signal.AreaChanged, () => {
             levelContainer.classList.toggle(
                 "hidden",
-                GameData.selected_area != area.name,
+                getSelectedArea() != area.name,
             );
         });
     });
@@ -612,14 +610,14 @@ function render_area_upgrades() {
         SignalManager.registerSignal(Signal.AreaChanged, () => {
             areaUpgradeContainer.classList.toggle(
                 "hidden",
-                GameData.selected_area != area.name,
+                getSelectedArea() != area.name,
             );
         });
     });
 }
 
 function canvas_on_click(x: number, y: number) {
-    const current_area = GameData.selected_area;
+    const current_area = getSelectedArea();
     const wood = FileData.area_to_wood[current_area];
     const damage = computeMultiplier(EffectType.ChopDamage, wood);
 
@@ -647,8 +645,8 @@ function render_main() {
     }
     SignalManager.registerSignal(Signal.MoneyGained, () => {
         if (!goldElement || !prestigeTokenElement) return;
-        goldElement.innerText = `${formatNumber(GameData.gold)}`;
-        prestigeTokenElement.innerText = `${formatNumber(GameData.prestige_tokens)}`;
+        goldElement.innerText = `${formatNumber(getGold())}`;
+        prestigeTokenElement.innerText = `${formatNumber(getPrestigeTokens())}`;
     });
 
     const woodTypeBox: HTMLElement | null =
@@ -686,8 +684,8 @@ function render_main() {
         return;
     }
 
-    SignalManager.registerSignalArray([Signal.AreaChanged, Signal.TreeDamage, Signal.UpgradeBought], () => {
-        const currentArea = GameData.selected_area;
+    SignalManager.registerSignalArray([Signal.AreaChanged, Signal.TreeDamage, Signal.UpgradeUnlocked], () => {
+        const currentArea = getSelectedArea();
         FileData.areas.forEach((value: AreaData) => {
             if (value.name != currentArea) return;
 
@@ -695,7 +693,7 @@ function render_main() {
             woodTypeBox.innerText =
                 wood.at(0)?.toUpperCase() + wood.slice(1) || "Unknown";
 
-            const chopProgress = GameData.chop_progress[wood] || 0;
+            const chopProgress = getChopProgress(wood);
             const baseHealth = value.wood.base_tree_health;
             const healthMultiplier = computeMultiplier(
                 EffectType.TreeHealth,
@@ -723,7 +721,7 @@ function render_main() {
             const profitValue = sellPriceValue * amountChopped;
             profit.innerText = `Profit: $${formatNumber(profitValue)}`;
 
-            const currentChops = GameData.chop_count[wood] || 0;
+            const currentChops = getChopCount(wood);
 
             const levelData: LevelData[] = FileData.wood_levels[wood] || [];
             // Search for the current level
@@ -739,6 +737,8 @@ function render_main() {
         });
     });
 }
+
+
 
 export async function render() {
     render_area_selector();

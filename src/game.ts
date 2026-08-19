@@ -1,19 +1,34 @@
-import { GameData, loadGame, setupAutoSave, setupSettingsModal } from "./game_data.js";
+import { toggleSignalSuppression,incrementPrestigeTokens,computePrestigeTokens, loadGame, setupAutoSave, setupSettingsModal, getGold, setGold, getChopProgress, setChopProgress, incrementGold, incrementChopCount, resetChopCount, resetChopProgress, setGoldThisRun, setPrestigeTokens, getPrestigeTokens, getSelectedArea, setSelectedArea, getUpgrade } from "./game_data.js";
 import { FileData, loadFiles } from "./files.js";
 import { render } from "./renderer.js";
-import { initializeMultipliers, computeMultiplier,computeCount } from "./multipliers.js";
+import { computeMultiplier,computeCount, AreaUpgradeCalculator, BlacksmithCalculator, CustomPool } from "./multipliers.js";
 import { Signal, SignalManager } from "./signal_manager.js";
-import { AreaData, EffectType, WoodType } from "./data.js";
+import { AreaType,AreaData, EffectType, WoodType } from "./data.js";
 
 async function initializeGame() {
     await loadFiles();
-    initializeMultipliers();
     render();
+}
+
+export function prestige() {
+    toggleSignalSuppression(true); // We dont want all the modifications to trigger signals
+    incrementPrestigeTokens(computePrestigeTokens());
+    setGold(0);
+    setGoldThisRun(0);
+    resetChopCount();
+    resetChopProgress();
+    AreaUpgradeCalculator.reset();
+    BlacksmithCalculator.reset();
+    CustomPool.reset();
+    setSelectedArea(AreaType.Forest);
+    toggleSignalSuppression(false);
+    SignalManager.triggerAllSignals();
+
 }
 
 export function applyDamage(wood: WoodType, damage: number) {
     const woodData = FileData.wood_to_data[wood];
-    const currentProgress = GameData.chop_progress[wood] || 0;
+    const currentProgress = getChopProgress(wood);
     const baseHealth = woodData.base_tree_health;
     const healthMutlplier = computeMultiplier(EffectType.TreeHealth, wood);
     const totalHealth = baseHealth * healthMutlplier;
@@ -27,24 +42,19 @@ export function applyDamage(wood: WoodType, damage: number) {
         const amountChopped =
             computeMultiplier(EffectType.ChopYield, wood) * completedChops;
         const totalSell = baseSell * sellMultiplier * amountChopped;
-        GameData.gold += totalSell;
-        GameData.gold_this_run += totalSell;
-        GameData.chop_count[wood] =
-            (GameData.chop_count[wood] || 0) + amountChopped;
-        SignalManager.triggerSignal(Signal.MoneyGained);
-        SignalManager.triggerSignal(Signal.TreeChopped);
+        incrementGold(totalSell);
+        incrementChopCount(wood, amountChopped);
         
     }
     const nextProgress = progress - completedChops * totalHealth;
-        GameData.chop_progress[wood] = nextProgress;
-    SignalManager.triggerSignal(Signal.TreeDamage);
+    setChopProgress(wood, nextProgress);
 }
 
 function handleTick(deltaTime: number) {
     const ticks = deltaTime / 1; // 1 second ticks for now maybe replace later
     FileData.areas.forEach((value: AreaData) => {
         const key = `${value.name.toLowerCase()}_unlocked`;
-        if (value.name != "Forest" && !GameData.upgrades[key]) return; // If the area isn't unlocked, skip it
+        if (value.name != "Forest" && !getUpgrade(key)) return; // If the area isn't unlocked, skip it
 
         const wood: WoodType = value.wood.name as WoodType;
         const damageMultiplier = computeMultiplier(EffectType.ChopDamage, wood);

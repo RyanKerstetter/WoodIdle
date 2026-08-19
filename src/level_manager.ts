@@ -1,5 +1,5 @@
 import { AreaType, LevelData } from "./data.js";
-import { GameData } from "./game_data.js";
+import { getUpgrade } from "./game_data.js";
 
 
 export class LevelManager {
@@ -25,7 +25,7 @@ export class LevelManager {
             const currentLevelIndex = this.current_levels[area] || 0;
             const levelData = this.levels[area][currentLevelIndex];
             const key = `${area.toLowerCase()}_chopped`;
-            if(levelData && (GameData.upgrades[key] || 0) >= levelData.required_chops) {
+            if(levelData && getUpgrade(key) >= levelData.required_chops) {
                 this.current_levels[area] = currentLevelIndex + 1;
             }
         }

@@ -5,7 +5,6 @@ export enum Signal {
     TreeDamage,     // This triggers whenever a tree takes damage
     TreeChopped,    // This triggers whenever a tree is fully chopped down
     AreaChanged,     // This triggers whenever the player changes areas
-    UpgradeBought,
     MoneyGained,
     UpgradeUnlocked, // This triggers whenever GameData.upgrades[] gets modified
 }

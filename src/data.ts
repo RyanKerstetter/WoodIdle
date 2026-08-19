@@ -1,6 +1,6 @@
 import { FileData } from "./files.js";
-import { GameData, setUpgrade, getUpgrade } from "./game_data.js";
-import { BlacksmithCalculator, UpgradeCalculator } from "./multipliers.js";
+import { incrementPrestigeTokens, incrementGold, getGold, getPrestigeTokens, getUpgrade, setUpgrade } from "./game_data.js";
+import { BlacksmithCalculator, ShrineUpgradeCalculator, AreaUpgradeCalculator, CustomPool } from "./multipliers.js";
 import { formatString } from "./util.js";
 
 export enum EquipLocation {
@@ -40,6 +40,7 @@ export function formatCostType(type: CostType){
 }
 
 export enum EffectType {
+    None = "none",
     AreaUpgradeDiscount = "area_upgrade_discount", // All area upgrade costs get divided by this so 2x would be 50% off
     BlacksmithDiscount = "blacksmith_discount",    // Blacksmith discounts work the same way
     PrestigeTokenMultiplier = "prestige_token_multipler",
@@ -172,14 +173,14 @@ export class CostUpgrade extends Upgrade {
 
     apply(): boolean {
         if (this.costType === CostType.Gold) {
-            if (GameData.gold >= this.cost) {
-                GameData.gold -= this.cost;
+            if (getGold() >= this.cost) {
+                incrementGold(-this.cost);
                 super.apply();
                 return true;
             }
         } else if (this.costType === CostType.PrestigeTokens) {
-            if (GameData.prestige_tokens >= this.cost) {
-                GameData.prestige_tokens -= this.cost;
+            if (getPrestigeTokens() >= this.cost) {
+                incrementPrestigeTokens(-this.cost);
                 super.apply();
                 return true;
             }
@@ -189,9 +190,9 @@ export class CostUpgrade extends Upgrade {
 
     canAfford(): boolean {
         if (this.costType === CostType.Gold) {
-            return GameData.gold >= this.cost;
+            return getGold() >= this.cost;
         } else if (this.costType === CostType.PrestigeTokens) {
-            return GameData.prestige_tokens >= this.cost;
+            return getPrestigeTokens() >= this.cost;
         }
         return false;
      }
@@ -217,9 +218,9 @@ export class CompoundingUpgrade extends Upgrade {
     canAfford(): boolean {
         const cost = this.getCost();
         if (this.costType == CostType.Gold) {
-            return GameData.gold >= cost;
+            return getGold() >= cost;
         } else if (this.costType == CostType.PrestigeTokens) {
-            return GameData.prestige_tokens >= cost;
+            return getPrestigeTokens() >= cost;
         }
         return false;
     }
@@ -227,14 +228,14 @@ export class CompoundingUpgrade extends Upgrade {
     apply(): boolean {
         const cost = this.getCost();
         if (this.costType === CostType.Gold) {
-            if (GameData.gold >= cost) {
-                GameData.gold -= cost;
+            if (getGold() >= cost) {
+                incrementGold(-cost);
                 super.apply();
                 return true;
             }
         } else if (this.costType === CostType.PrestigeTokens) {
-            if (GameData.prestige_tokens >= cost) {
-                GameData.prestige_tokens -= cost;
+            if (getPrestigeTokens() >= cost) {
+                incrementPrestigeTokens(-cost);
                 super.apply();
                 return true;
             }
@@ -324,6 +325,7 @@ export class Custom { // This is used to set values from a json config
     constructor(data: any) {
         this.id = data.id;
         this.value = data.value;
+        CustomPool.addEffect(new Effect({type: EffectType.None, value: 0}, this.id));
     }
 
     apply() {
@@ -410,7 +412,7 @@ export class IndividualAreaUpgradeData {
                 e.wood_type = wood;
                 return e;
             });
-            effects.map((effect:Effect) => UpgradeCalculator.addEffect(effect));
+            effects.map((effect:Effect) => AreaUpgradeCalculator.addEffect(effect));
             this.upgrades[area] = new AreaUpgrade(upgradeId,this.getBaseCost(area),this.cost_multiplier,CostType.Gold,effects);
         }
     }
@@ -497,6 +499,7 @@ export class ShrineNode {
         let effectsData: any = data.effects;
         if (Array.isArray(effectsData)) {
             this.effects = effectsData.map((effect: any) => new Effect(effect, this.upgrade_id));
+            this.effects.map((effect:Effect) => ShrineUpgradeCalculator.addEffect(effect));
         }
     }
 }

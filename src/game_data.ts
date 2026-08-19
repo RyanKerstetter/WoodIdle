@@ -1,7 +1,7 @@
 import type {WoodType, AreaType } from "./data.js";
 import { Signal, SignalManager } from "./signal_manager.js";
 
-export const GameData = {
+const GameData = {
     gold: 0 as number,
     prestige_tokens: 0 as number,
     gold_this_run: 0 as number,
@@ -9,6 +9,13 @@ export const GameData = {
     selected_area: "Forest" as AreaType,
     chop_progress: {} as Record<WoodType,number>,
     chop_count : {} as Record<WoodType,number>,
+    // When this is on any modifications dont trigger signals
+    // This is useful for when you want to make a lot of changes at once and dont want to trigger signals for each change
+    supress_signals: false as boolean
+}
+
+export function toggleSignalSuppression(suppress: boolean) {
+    GameData.supress_signals = suppress;
 }
 
 export function getUpgrade(upgradeId: string): number {
@@ -17,7 +24,110 @@ export function getUpgrade(upgradeId: string): number {
 
 export function setUpgrade(upgradeId: string, level: number) {
     GameData.upgrades[upgradeId] = level;
-    SignalManager.triggerSignal(Signal.UpgradeUnlocked);
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.UpgradeUnlocked);
+    }
+}
+
+export function getGold(): number {
+    return GameData.gold;
+}
+
+export function incrementGold(amount: number) {
+    GameData.gold += amount;
+    GameData.gold_this_run += amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.MoneyGained);
+    }
+}
+
+
+export function setGold(amount: number) {
+    GameData.gold = amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.MoneyGained);
+    }
+}
+
+export function getPrestigeTokens(): number {
+    return GameData.prestige_tokens;
+}
+
+export function incrementPrestigeTokens(amount: number) {
+    GameData.prestige_tokens += amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.MoneyGained);
+    }
+}
+
+export function setPrestigeTokens(amount: number) {
+    GameData.prestige_tokens = amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.MoneyGained);
+    }
+}
+
+export function getChopCount(wood: WoodType): number {
+    return GameData.chop_count[wood] || 0;
+}
+
+export function incrementChopCount(wood: WoodType, amount: number) {
+    GameData.chop_count[wood] = (GameData.chop_count[wood] || 0) + amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.TreeChopped);
+    }
+}
+
+export function setChopCount(wood: WoodType, count: number) {
+    GameData.chop_count[wood] = count;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.TreeChopped);
+    }
+}
+
+export function resetChopCount(){
+    GameData.chop_count = {} as Record<WoodType,number>;
+}
+
+export function getChopProgress(wood: WoodType): number {
+    return GameData.chop_progress[wood] || 0;
+}
+
+export function setChopProgress(wood: WoodType, progress: number) {
+    GameData.chop_progress[wood] = progress;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.TreeDamage);
+    }
+}
+
+export function resetChopProgress() {
+    GameData.chop_progress = {} as Record<WoodType,number>;
+}
+
+export function getSelectedArea(): AreaType {
+    return GameData.selected_area;
+}
+
+export function setSelectedArea(area: AreaType) {
+    GameData.selected_area = area;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.AreaChanged);
+    }
+}
+
+export function getGoldThisRun(): number {
+    return GameData.gold_this_run;
+}
+
+export function setGoldThisRun(amount: number) {
+    GameData.gold_this_run = amount;
+    if(!GameData.supress_signals) {
+        SignalManager.triggerSignal(Signal.MoneyGained);
+    }
+}
+
+export function computePrestigeTokens(): number {
+    return Math.floor(Math.pow(GameData.gold_this_run / 1e18,.2));
 }
 
 function resetGameData() {
