@@ -727,8 +727,9 @@ function render_main() {
 
             const currentChops = getChopCount(wood);
 
-            const currentLevelIndex = LevelManager.getCurrentLevel(value.name as AreaType);
-            const levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
+            const currentLevelIndex = LevelManager.getCurrentLevel(value.name as AreaType) || 0;
+            console.log(`Current Level Index for ${value.name}: ${currentLevelIndex}`);
+            const levelData = FileData.wood_levels[wood][currentLevelIndex];
             // Search for the current level
             if(!levelData) return;
             const levelRatio = currentChops / levelData.required_chops; // Use the first one that isn't completed
