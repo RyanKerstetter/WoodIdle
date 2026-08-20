@@ -1,32 +1,34 @@
 import { AreaType, LevelData } from "./data.js";
-import { getUpgrade } from "./game_data.js";
+import { FileData } from "./files.js";
+import { getChopCount, getUpgrade, setUpgrade } from "./game_data.js";
+import { LevelPool } from "./multipliers.js";
 
 
-export class LevelManager {
-    levels: Record<AreaType, LevelData[]>;
-    current_levels: Record<AreaType, number>;
-
-    constructor() {
-        this.levels = {} as Record<AreaType, LevelData[]>;
-        this.current_levels = {} as Record<AreaType, number>;
-        for (const areaType in AreaType) {
-            this.levels[AreaType[areaType as keyof typeof AreaType]] = [];
-            this.current_levels[AreaType[areaType as keyof typeof AreaType]] = 0;
-        }
-    }
+export const LevelManager = {
+    current_levels: {} as Record<AreaType, number>,
 
     getCurrentLevel(areaType: AreaType): number {
         return this.current_levels[areaType] || 0;
-    }
+    },
 
-    updateLevels(){
+    checkLevels(){
         for(const areaType in AreaType) {
             const area = AreaType[areaType as keyof typeof AreaType];
-            const currentLevelIndex = this.current_levels[area] || 0;
-            const levelData = this.levels[area][currentLevelIndex];
-            const key = `${area.toLowerCase()}_chopped`;
-            if(levelData && getUpgrade(key) >= levelData.required_chops) {
+            const wood = FileData.area_to_wood[area];
+            var currentLevelIndex = this.current_levels[area] || 0;
+            var levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
+            while(levelData && getChopCount(wood) >= levelData.required_chops) {
+                levelData.effects.forEach(effect => {
+                    const upgradeId = effect.upgrade_id;
+                    setUpgrade(upgradeId, 1);
+                });
+                if(levelData.custom) {
+                    levelData.custom.apply();
+                }
+
                 this.current_levels[area] = currentLevelIndex + 1;
+                currentLevelIndex = this.current_levels[area];
+                levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
             }
         }
     }

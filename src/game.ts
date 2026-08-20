@@ -1,7 +1,7 @@
 import { toggleSignalSuppression,incrementPrestigeTokens,computePrestigeTokens, loadGame, setupAutoSave, setupSettingsModal, getGold, setGold, getChopProgress, setChopProgress, incrementGold, incrementChopCount, resetChopCount, resetChopProgress, setGoldThisRun, setPrestigeTokens, getPrestigeTokens, getSelectedArea, setSelectedArea, getUpgrade } from "./game_data.js";
 import { FileData, loadFiles } from "./files.js";
 import { render } from "./renderer.js";
-import { computeMultiplier,computeCount, AreaUpgradeCalculator, BlacksmithCalculator, CustomPool } from "./multipliers.js";
+import { computeMultiplier,computeCount, AreaUpgradePool, BlacksmithCalculator, CustomPool } from "./multipliers.js";
 import { Signal, SignalManager } from "./signal_manager.js";
 import { AreaType,AreaData, EffectType, WoodType } from "./data.js";
 
@@ -17,7 +17,7 @@ export function prestige() {
     setGoldThisRun(0);
     resetChopCount();
     resetChopProgress();
-    AreaUpgradeCalculator.reset();
+    AreaUpgradePool.reset();
     BlacksmithCalculator.reset();
     CustomPool.reset();
     setSelectedArea(AreaType.Forest);
@@ -62,8 +62,8 @@ function handleTick(deltaTime: number) {
         const totalDamage = damageMultiplier * ticks * workerCount;
 
         applyDamage(wood,totalDamage);
-        SignalManager.triggerSignal(Signal.Tick);
     });
+    SignalManager.triggerSignal(Signal.Tick);
 }
 
 async function startGame() {

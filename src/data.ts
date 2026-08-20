@@ -1,6 +1,6 @@
 import { FileData } from "./files.js";
 import { incrementPrestigeTokens, incrementGold, getGold, getPrestigeTokens, getUpgrade, setUpgrade } from "./game_data.js";
-import { BlacksmithCalculator, ShrineUpgradeCalculator, AreaUpgradeCalculator, CustomPool } from "./multipliers.js";
+import { BlacksmithCalculator, AreaUpgradePool, CustomPool, LevelPool, ShrineUpgradePool } from "./multipliers.js";
 import { formatString } from "./util.js";
 
 export enum EquipLocation {
@@ -344,6 +344,7 @@ export class LevelData {
         this.level = data.level;
         this.required_chops = data.required_chops;
         this.effects = data.effects.map((effectData: any) => new Effect(effectData, `prestige_level_${data.level}`));
+        this.effects.map((effect:Effect) => LevelPool.addEffect(effect));
         this.description = data.description;
         if(data.custom) {
             this.custom = new Custom(data.custom);
@@ -412,7 +413,7 @@ export class IndividualAreaUpgradeData {
                 e.wood_type = wood;
                 return e;
             });
-            effects.map((effect:Effect) => AreaUpgradeCalculator.addEffect(effect));
+            effects.map((effect:Effect) => AreaUpgradePool.addEffect(effect));
             this.upgrades[area] = new AreaUpgrade(upgradeId,this.getBaseCost(area),this.cost_multiplier,CostType.Gold,effects);
         }
     }
@@ -499,7 +500,7 @@ export class ShrineNode {
         let effectsData: any = data.effects;
         if (Array.isArray(effectsData)) {
             this.effects = effectsData.map((effect: any) => new Effect(effect, this.upgrade_id));
-            this.effects.map((effect:Effect) => ShrineUpgradeCalculator.addEffect(effect));
+            this.effects.map((effect:Effect) => ShrineUpgradePool.addEffect(effect));
         }
     }
 }

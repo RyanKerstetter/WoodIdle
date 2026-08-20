@@ -18,6 +18,7 @@ import {
 } from "./data.js";
 import { formatString } from "./util.js";
 import { applyDamage, prestige } from "./game.js";
+import { LevelManager } from "./level_manager.js";
 
 export function iconHtml(
     name: string,
@@ -558,6 +559,9 @@ function render_levels() {
             );
             levelContainer.appendChild(levelCard);
         });
+        SignalManager.registerSignal(Signal.TreeChopped, () => {
+            LevelManager.checkLevels();
+        });
         SignalManager.registerSignal(Signal.AreaChanged, () => {
             levelContainer.classList.toggle(
                 "hidden",
@@ -723,17 +727,15 @@ function render_main() {
 
             const currentChops = getChopCount(wood);
 
-            const levelData: LevelData[] = FileData.wood_levels[wood] || [];
+            const currentLevelIndex = LevelManager.getCurrentLevel(value.name as AreaType);
+            const levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
             // Search for the current level
-            for (const level of levelData) {
-                if (level.required_chops <= currentChops) continue; // If more chops than the level needs it is completed so not current
-                const ratio = currentChops / level.required_chops; // Use the first one that isn't completed
-                const percentage = ratio * 100;
-                progressBarLevel.style.width = `${percentage}%`;
-                progressTextRatio.innerText = `${formatNumber(currentChops)} / ${formatNumber(level.required_chops)} Logs`;
-                progressTextLevel.innerText = `Level ${level.level - 1}`;
-                return;
-            }
+            if(!levelData) return;
+            const levelRatio = currentChops / levelData.required_chops; // Use the first one that isn't completed
+            const levelPercentage = levelRatio * 100;
+            progressBarLevel.style.width = `${levelPercentage}%`;
+            progressTextRatio.innerText = `${formatNumber(currentChops)} / ${formatNumber(levelData.required_chops)} Logs`;
+            progressTextLevel.innerText = `Level ${levelData.level}`;
         });
     });
 }
