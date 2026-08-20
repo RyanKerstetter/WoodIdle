@@ -94,7 +94,7 @@ function render_blacksmith_upgrade(
     const costButton =
         upgradeElement.querySelector<HTMLButtonElement>(".upgrade-cost");
 
-    SignalManager.registerSignal(Signal.UpgradeUnlocked, () => {
+    SignalManager.registerSignalArray([Signal.UpgradeUnlocked, Signal.MoneyGained], () => {
         if (!costButton) return;
 
         const upgradeId = upgrade.upgrade_id;
