@@ -16,7 +16,7 @@ export const LevelManager = {
             const area = AreaType[areaType as keyof typeof AreaType];
             const wood = FileData.area_to_wood[area];
             var currentLevelIndex = this.current_levels[area] || 0;
-            var levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
+            var levelData = FileData.wood_levels[wood][currentLevelIndex];
             while(levelData && getChopCount(wood) >= levelData.required_chops) {
                 levelData.effects.forEach(effect => {
                     const upgradeId = effect.upgrade_id;
@@ -28,7 +28,7 @@ export const LevelManager = {
 
                 this.current_levels[area] = currentLevelIndex + 1;
                 currentLevelIndex = this.current_levels[area];
-                levelData = FileData.wood_levels[wood][currentLevelIndex + 1];
+                levelData = FileData.wood_levels[wood][currentLevelIndex];
             }
         }
     }
