@@ -35,7 +35,9 @@ export function getGold(): number {
 
 export function incrementGold(amount: number) {
     GameData.gold += amount;
-    GameData.gold_this_run += amount;
+    if(amount > 0) {
+        GameData.gold_this_run += amount;
+    }
     if(!GameData.supress_signals) {
         SignalManager.triggerSignal(Signal.MoneyGained);
     }

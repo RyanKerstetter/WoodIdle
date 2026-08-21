@@ -60,6 +60,19 @@
                         <button id="prestige-button" class="upgrade-count shrine-prestige">Prestige</button>
                     </div>
                 </div>
+                <canvas id="shrine-canvas"></canvas>
+                <div id="shrine-upgrade-details" class="shrine-upgrade-details" aria-live="polite">
+                    <div class="shrine-upgrade-info">
+                        <div class="shrine-upgrade-heading">
+                            <strong id="shrine-upgrade-name">Select an upgrade</strong>
+                            <span id="shrine-upgrade-level">-</span>
+                        </div>
+                        <p id="shrine-upgrade-description">Click an upgrade node to view its details.</p>
+                    </div>
+                    <button id="shrine-upgrade-purchase" class="upgrade-cost" disabled>
+                        <span id="shrine-upgrade-cost">-</span>
+                    </button>
+                </div>
             </div>
             <div id="library" class="hidden"></div>
         </div>

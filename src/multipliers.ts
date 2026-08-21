@@ -100,12 +100,14 @@ export function computeMultiplier(effectType: EffectType, woodType: WoodType | n
     const upgradeMultiplier = AreaUpgradePool.calculate(effectType,CalculateType.Multiplier, woodType);
     const blacksmithMultiplier = BlacksmithCalculator.calculate(effectType,CalculateType.Multiplier, woodType);
     const levelMultiplier = LevelPool.calculate(effectType,CalculateType.Multiplier, woodType);
-    return upgradeMultiplier * blacksmithMultiplier * levelMultiplier;
+    const shrineMultiplier = ShrineUpgradePool.calculate(effectType,CalculateType.Multiplier, woodType);
+    return upgradeMultiplier * blacksmithMultiplier * levelMultiplier * shrineMultiplier;
 }
 
 export function computeCount(effectType: EffectType, woodType:WoodType | null = null): number {
     const upgradeCount = AreaUpgradePool.calculate(effectType,CalculateType.Count, woodType);
     const blacksmithCount = BlacksmithCalculator.calculate(effectType,CalculateType.Count, woodType);
     const levelCount = LevelPool.calculate(effectType,CalculateType.Count, woodType);
-    return upgradeCount + blacksmithCount + levelCount;
+    const shrineCount = ShrineUpgradePool.calculate(effectType,CalculateType.Count, woodType);
+    return upgradeCount + blacksmithCount + levelCount + shrineCount;
 }

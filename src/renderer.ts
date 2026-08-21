@@ -14,6 +14,7 @@ import {
     Requirement,
     IndividualAreaUpgradeData,
     AreaType,
+    CostType,
     formatCostType,
 } from "./data.js";
 import { formatString } from "./util.js";
@@ -325,6 +326,13 @@ function render_shrine() {
     const shrineEarnings = shrine.querySelector("#shrine-earnings") as HTMLElement;
     const shrinePrestige = shrine.querySelector("#shrine-prestige") as HTMLElement;
     const prestigeButton = shrine.querySelector("#prestige-button") as HTMLButtonElement;
+    const shrineUpgradeDetails = shrine.querySelector("#shrine-upgrade-details") as HTMLElement;
+    const shrineUpgradeName = shrine.querySelector("#shrine-upgrade-name") as HTMLElement;
+    const shrineUpgradeDescription = shrine.querySelector("#shrine-upgrade-description") as HTMLElement;
+    const shrineUpgradeCost = shrine.querySelector("#shrine-upgrade-cost") as HTMLElement;
+    const shrineUpgradeLevel = shrine.querySelector("#shrine-upgrade-level") as HTMLElement;
+    const shrineUpgradePurchase = shrine.querySelector("#shrine-upgrade-purchase") as HTMLButtonElement;
+    let selectedNode: ShrineNode | null = null;
 
     prestigeButton.onclick = () => {
         prestige();
@@ -336,10 +344,7 @@ function render_shrine() {
         shrinePrestige.innerText = `${formatNumber(computePrestigeTokens())}`;
     })
 
-    const shrine_canvas = document.createElement("canvas") as HTMLCanvasElement;
-
-    shrine_canvas.id = "shrine-canvas";
-    shrine?.appendChild(shrine_canvas);
+    const shrine_canvas = shrine.querySelector("#shrine-canvas") as HTMLCanvasElement;
     const resizeCanvas = () => {
         const rect = shrine_canvas.getBoundingClientRect();
         const w = rect.width || shrine.clientWidth || 800;
@@ -357,6 +362,43 @@ function render_shrine() {
 
     const ctx = shrine_canvas.getContext("2d");
     let isDragging = false;
+
+    const updateShrineUpgradeDetails = () => {
+        if (!selectedNode) return;
+        const purchased = getUpgrade(selectedNode.upgrade_id);
+        const upgrade = new CompoundingUpgrade(
+            selectedNode.upgrade_id,
+            selectedNode.base_cost,
+            selectedNode.cost_multiplier,
+            CostType.PrestigeTokens,
+        );
+        const cost = upgrade.getCost();
+        shrineUpgradeName.textContent = selectedNode.name;
+        shrineUpgradeDescription.textContent = selectedNode.description;
+        shrineUpgradeCost.textContent = purchased >= selectedNode.max_upgrades
+            ? "Maxed"
+            : `${formatNumber(cost)} Prestige Tokens`;
+        shrineUpgradeLevel.textContent = `${purchased} / ${selectedNode.max_upgrades}`;
+        const canPurchase = purchased < selectedNode.max_upgrades && upgrade.canAfford();
+        shrineUpgradePurchase.disabled = !canPurchase;
+        shrineUpgradePurchase.classList.toggle("can-afford", canPurchase);
+        shrineUpgradePurchase.classList.toggle("cannot-afford", !canPurchase);
+    };
+
+    SignalManager.registerSignalArray([Signal.UpgradeUnlocked, Signal.MoneyGained], updateShrineUpgradeDetails);
+
+    shrineUpgradePurchase.onclick = () => {
+        if (!selectedNode) return;
+        const upgrade = new CompoundingUpgrade(
+            selectedNode.upgrade_id,
+            selectedNode.base_cost,
+            selectedNode.cost_multiplier,
+            CostType.PrestigeTokens,
+        );
+        if (getUpgrade(selectedNode.upgrade_id) >= selectedNode.max_upgrades) return;
+        upgrade.apply();
+        updateShrineUpgradeDetails();
+    };
 
     const iconCache = new Map<string, HTMLImageElement>();
     FileData.shrine_nodes.forEach((node: ShrineNode) => {
@@ -428,6 +470,9 @@ function render_shrine() {
 
         if (clickedNode) {
             console.log(`Clicked on shrine node: ${clickedNode.name}`);
+            selectedNode = clickedNode;
+            updateShrineUpgradeDetails();
+            requestAnimationFrame(draw);
             shrine_canvas.style.cursor = "pointer";
             return;
         }

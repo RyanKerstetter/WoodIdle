@@ -31,5 +31,12 @@ export const LevelManager = {
                 levelData = FileData.wood_levels[wood][currentLevelIndex];
             }
         }
+    },
+
+    reset() {
+        for(const areaType in AreaType) {
+            const area = AreaType[areaType as keyof typeof AreaType];
+            this.current_levels[area] = 0;
+        }
     }
 }
