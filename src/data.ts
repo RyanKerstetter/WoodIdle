@@ -211,7 +211,6 @@ export class CompoundingUpgrade extends Upgrade {
 
     getCost(): number {
         const level = getUpgrade(this.id);
-        //console.log(this);
         return this.baseCost * (this.multiplier ** level);
     }
 
@@ -318,14 +317,24 @@ export class AreaData {
     }
 }
 
+export enum PersistenceType {
+    Persistent = "persistent", // Persistent doesn't get wiped on prestige
+    ResetOnPrestige = "reset_on_prestige",    // On reset gets reset on prestige
+}
+
 export class Custom { // This is used to set values from a json config
     id: string;
     value: number;
+    persistence_type: PersistenceType;
 
     constructor(data: any) {
         this.id = data.id;
         this.value = data.value;
-        CustomPool.addEffect(new Effect({type: EffectType.None, value: 0}, this.id));
+        
+        this.persistence_type = !!data.persistence_type ? data.persistence_type : PersistenceType.ResetOnPrestige;
+        if(this.persistence_type!=PersistenceType.Persistent){
+            CustomPool.addEffect(new Effect({type: EffectType.None, value: 0}, this.id));
+        }
     }
 
     apply() {
@@ -427,7 +436,6 @@ export class IndividualAreaUpgradeData {
             wood: FileData.area_to_wood[area] || "unknown",
         };
         const upgradeId = formatString(this.upgrade_id, replacementContext);
-        console.log(this.upgrade_id,upgradeId,replacementContext);
         const level = getUpgrade(upgradeId);
         return this.getBaseCost(area) * (this.cost_multiplier ** level);
     }
@@ -455,7 +463,6 @@ export class BaseCosts {
     }
 
     getCost(area: AreaType): number {
-        console.log(area,this);
         switch(area) {
             case AreaType.Forest:
                 return this.forest;

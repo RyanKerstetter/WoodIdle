@@ -457,8 +457,7 @@ function render_shrine() {
         const screenX = e.clientX - rect.left;
         const screenY = e.clientY - rect.top;
         const world = toWorld(screenX, screenY);
-        console.log(`Screen: (${screenX}, ${screenY}) -> World: (${world.x}, ${world.y})`);
-        console.log(`Shrine Camera Position: (${shrine_camera_pos.x}, ${shrine_camera_pos.y}), Zoom: ${shrine_zoom}`);
+        
         const clickedNode = FileData.shrine_nodes.find((node: ShrineNode) => {
             return (
                 world.x >= node.position.x + 5 &&
@@ -469,7 +468,6 @@ function render_shrine() {
         });
 
         if (clickedNode) {
-            console.log(`Clicked on shrine node: ${clickedNode.name}`);
             selectedNode = clickedNode;
             updateShrineUpgradeDetails();
             requestAnimationFrame(draw);
@@ -574,7 +572,6 @@ function render_area_selector() {
                 const element = document.querySelector(
                     `#${building.toLowerCase()}`,
                 );
-                console.log(building,element,sidebar);
                 element?.classList.toggle("hidden", building != sidebar);
             });
         });
@@ -773,7 +770,6 @@ function render_main() {
             const currentChops = getChopCount(wood);
 
             const currentLevelIndex = LevelManager.getCurrentLevel(value.name as AreaType) || 0;
-            console.log(`Current Level Index for ${value.name}: ${currentLevelIndex}`);
             const levelData = FileData.wood_levels[wood][currentLevelIndex];
             // Search for the current level
             if(!levelData) return;

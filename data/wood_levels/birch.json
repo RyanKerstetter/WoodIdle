@@ -105,7 +105,8 @@
         "effects": [],
         "custom": {
             "id": "shrine_unlocked",
-            "value": 1
+            "value": 1,
+            "persistence_type" : "persistent"
         }
     }
 ]
